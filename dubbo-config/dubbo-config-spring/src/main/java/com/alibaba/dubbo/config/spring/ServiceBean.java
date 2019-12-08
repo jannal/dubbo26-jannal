@@ -47,7 +47,7 @@ import static com.alibaba.dubbo.config.spring.util.BeanFactoryUtils.addApplicati
 
 /**
  * ServiceFactoryBean
- *
+ * 此类实现了ApplicationListener，则在容器初始化的时候执行onApplicationEvent()
  * @export
  */
 public class ServiceBean<T> extends ServiceConfig<T> implements InitializingBean, DisposableBean,
@@ -79,7 +79,9 @@ public class ServiceBean<T> extends ServiceConfig<T> implements InitializingBean
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
+        //将applicationContext设置到SpringExtensionFactory中,用于后续从SpringExtensionFactory中获取Bean
         SpringExtensionFactory.addApplicationContext(applicationContext);
+        //兼容Spring2.0.1，如果支持返回true，否则返回false
         supportedApplicationListener = addApplicationListener(applicationContext, this);
     }
 
@@ -97,16 +99,26 @@ public class ServiceBean<T> extends ServiceConfig<T> implements InitializingBean
         return service;
     }
 
+
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
+        /**
+         * 是否延迟暴露 && 服务没有暴露过 && 没有取消暴露，则进行服务暴露
+         * 没有设置delay或者-1表示不需要延迟暴露
+         */
         if (isDelay() && !isExported() && !isUnexported()) {
             if (logger.isInfoEnabled()) {
                 logger.info("The service ready on spring started. service: " + getInterface());
             }
+            //导出服务
             export();
         }
     }
-
+    /**
+     *  如果没有设置或者-1，该方法返回true，表示不延迟暴露。
+     *  此方法返回值与语义有些不符
+     *  官方新版本已经重构https://github.com/apache/dubbo/pull/2686
+     */
     private boolean isDelay() {
         Integer delay = getDelay();
         ProviderConfig provider = getProvider();

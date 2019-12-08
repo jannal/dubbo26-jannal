@@ -31,7 +31,10 @@ import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
 
 /**
  * DubboNamespaceHandler
- *
+ * 1. 编写XML schema
+ * 2. 自定义 NamespaceHandler
+ * 3. 注册NamespaceHandler 和 schema
+ * 4. Spring默认会在加载jar包下的 META-INF/spring.handlers文件下寻找NamespaceHandler，在 META-INF/spring.schemas 文件下查找schema
  * @export
  */
 public class DubboNamespaceHandler extends NamespaceHandlerSupport {

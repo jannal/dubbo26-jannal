@@ -30,7 +30,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.Map;
-
+/**
+ * 用于将bean转换为JavaBeanDescriptor
+ */
 public final class JavaBeanSerializeUtil {
 
     private static final Logger logger = LoggerFactory.getLogger(JavaBeanSerializeUtil.class);

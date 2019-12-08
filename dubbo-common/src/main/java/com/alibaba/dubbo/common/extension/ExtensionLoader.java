@@ -754,7 +754,10 @@ public class ExtensionLoader<T> {
         // no need to generate adaptive class since there's no adaptive method found.
         if (!hasAdaptiveAnnotation)
             throw new IllegalStateException("No adaptive method on extension " + type.getName() + ", refuse to create the adaptive class!");
-
+        /**
+         * 1. 动态类的包名就是相应的SPI接口的包名
+         * 2. 动态类的类名就是SPI接口名+$Adpative
+         */
         codeBuilder.append("package ").append(type.getPackage().getName()).append(";");
         codeBuilder.append("\nimport ").append(ExtensionLoader.class.getName()).append(";");
         codeBuilder.append("\npublic class ").append(type.getSimpleName()).append("$Adaptive").append(" implements ").append(type.getCanonicalName()).append(" {");
