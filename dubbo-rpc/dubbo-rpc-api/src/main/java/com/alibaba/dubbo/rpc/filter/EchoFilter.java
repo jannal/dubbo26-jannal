@@ -27,6 +27,7 @@ import com.alibaba.dubbo.rpc.RpcResult;
 
 /**
  * EchoInvokerFilter
+ * 用于echo测试
  */
 @Activate(group = Constants.PROVIDER, order = -110000)
 public class EchoFilter implements Filter {

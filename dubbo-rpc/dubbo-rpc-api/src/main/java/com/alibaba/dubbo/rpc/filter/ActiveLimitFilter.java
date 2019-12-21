@@ -28,6 +28,7 @@ import com.alibaba.dubbo.rpc.RpcStatus;
 
 /**
  * LimitInvokerFilter
+ * 用于限制consumer对provider的最大并行调用数，用于consumer
  */
 @Activate(group = Constants.CONSUMER, value = Constants.ACTIVES_KEY)
 public class ActiveLimitFilter implements Filter {
@@ -45,6 +46,7 @@ public class ActiveLimitFilter implements Filter {
             int active = count.getActive();
             if (active >= max) {
                 synchronized (count) {
+                    // 大于阈值就等待，while是避免虚假唤醒，这里使用信号量不是更好？
                     while ((active = count.getActive()) >= max) {
                         try {
                             count.wait(remain);
@@ -76,6 +78,7 @@ public class ActiveLimitFilter implements Filter {
             }
         } finally {
             if (max > 0) {
+                //唤醒
                 synchronized (count) {
                     count.notify();
                 }

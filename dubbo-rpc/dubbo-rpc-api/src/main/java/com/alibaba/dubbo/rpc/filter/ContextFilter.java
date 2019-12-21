@@ -32,6 +32,7 @@ import java.util.Map;
 
 /**
  * ContextInvokerFilter
+ * 1. 为provider把一些上下文信息设置到当前线程的RpcContext对象中
  */
 @Activate(group = Constants.PROVIDER, order = -10000)
 public class ContextFilter implements Filter {

@@ -41,6 +41,7 @@ import java.lang.reflect.Method;
 
 /**
  * GenericImplInvokerFilter
+ * 1. 用于consumer实现泛化调用，实现序列化的检查和处理
  */
 @Activate(group = Constants.CONSUMER, value = Constants.GENERIC_KEY, order = 20000)
 public class GenericImplFilter implements Filter {

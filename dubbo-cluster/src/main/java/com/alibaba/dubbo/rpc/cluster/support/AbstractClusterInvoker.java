@@ -113,10 +113,13 @@ public abstract class AbstractClusterInvoker<T> implements Invoker<T> {
             return null;
         String methodName = invocation == null ? "" : invocation.getMethodName();
 
+        //获取 sticky 配置（粘滞连接）。粘滞连接是指让服务消费者尽可能的
+        //调用同一个服务提供者，除非该提供者挂了再进行切换
         boolean sticky = invokers.get(0).getUrl().getMethodParameter(methodName, Constants.CLUSTER_STICKY_KEY, Constants.DEFAULT_CLUSTER_STICKY);
         {
             //ignore overloaded method
             if (stickyInvoker != null && !invokers.contains(stickyInvoker)) {
+                //表示挂了
                 stickyInvoker = null;
             }
             //ignore concurrency problem
@@ -230,6 +233,7 @@ public abstract class AbstractClusterInvoker<T> implements Invoker<T> {
         LoadBalance loadbalance = null;
 
         // binding attachments into invocation.
+        // 绑定 attachments 到 invocation 中.
         Map<String, String> contextAttachments = RpcContext.getContext().getAttachments();
         if (contextAttachments != null && contextAttachments.size() != 0) {
             ((RpcInvocation) invocation).addAttachments(contextAttachments);

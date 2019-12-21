@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>com.alibaba.dubbo.rpc.cluster.directory.AbstractDirectory</OriginalElement>
+  <nodes>
+    <node x="0.0" y="324.0">com.alibaba.dubbo.registry.integration.RegistryDirectory.InvokerDelegate</node>
+    <node x="203.0" y="324.0">com.alibaba.dubbo.registry.integration.RegistryDirectory.InvokerComparator</node>
+    <node x="355.75" y="162.0">com.alibaba.dubbo.rpc.cluster.directory.AbstractDirectory</node>
+    <node x="424.0" y="324.0">com.alibaba.dubbo.rpc.cluster.support.FailoverClusterInvokerTest.MockDirectory</node>
+    <node x="391.75" y="81.0">com.alibaba.dubbo.rpc.cluster.Directory</node>
+    <node x="209.0" y="0.0">com.alibaba.dubbo.common.Node</node>
+    <node x="415.0" y="243.0">com.alibaba.dubbo.rpc.cluster.directory.StaticDirectory</node>
+    <node x="152.75" y="243.0">com.alibaba.dubbo.registry.integration.RegistryDirectory</node>
+    <node x="116.0" y="162.0">com.alibaba.dubbo.registry.NotifyListener</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="com.alibaba.dubbo.registry.integration.RegistryDirectory" target="com.alibaba.dubbo.rpc.cluster.directory.AbstractDirectory">
+      <point x="50.25" y="-15.5" />
+      <point x="303.5" y="218.0" />
+      <point x="406.0" y="218.0" />
+      <point x="-50.25" y="15.5" />
+    </edge>
+    <edge source="com.alibaba.dubbo.rpc.cluster.Directory" target="com.alibaba.dubbo.common.Node">
+      <point x="0.0" y="-15.5" />
+      <point x="456.25" y="56.0" />
+      <point x="272.0" y="56.0" />
+      <point x="21.0" y="15.5" />
+    </edge>
+    <edge source="com.alibaba.dubbo.registry.integration.RegistryDirectory.InvokerComparator" target="com.alibaba.dubbo.registry.integration.RegistryDirectory">
+      <point x="0.0" y="-15.5" />
+      <point x="50.25" y="15.5" />
+    </edge>
+    <edge source="com.alibaba.dubbo.rpc.cluster.directory.StaticDirectory" target="com.alibaba.dubbo.rpc.cluster.directory.AbstractDirectory">
+      <point x="0.0" y="-15.5" />
+      <point x="50.25" y="15.5" />
+    </edge>
+    <edge source="com.alibaba.dubbo.rpc.cluster.directory.AbstractDirectory" target="com.alibaba.dubbo.rpc.cluster.Directory">
+      <point x="0.0" y="-15.5" />
+      <point x="0.0" y="15.5" />
+    </edge>
+    <edge source="com.alibaba.dubbo.registry.integration.RegistryDirectory.InvokerDelegate" target="com.alibaba.dubbo.registry.integration.RegistryDirectory">
+      <point x="45.75" y="-15.5" />
+      <point x="137.25" y="299.0" />
+      <point x="203.0" y="299.0" />
+      <point x="-50.25" y="15.5" />
+    </edge>
+    <edge source="com.alibaba.dubbo.registry.integration.RegistryDirectory" target="com.alibaba.dubbo.registry.NotifyListener">
+      <point x="-50.25" y="-15.5" />
+      <point x="0.0" y="15.5" />
+    </edge>
+    <edge source="com.alibaba.dubbo.registry.integration.RegistryDirectory.InvokerDelegate" target="com.alibaba.dubbo.common.Node">
+      <point x="-45.75" y="-15.5" />
+      <point x="45.75" y="56.0" />
+      <point x="230.0" y="56.0" />
+      <point x="-21.0" y="15.5" />
+    </edge>
+    <edge source="com.alibaba.dubbo.rpc.cluster.support.FailoverClusterInvokerTest.MockDirectory" target="com.alibaba.dubbo.rpc.cluster.directory.StaticDirectory">
+      <point x="0.0" y="-15.5" />
+      <point x="0.0" y="15.5" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="1.0" x="412.5" y="243.5" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Inner Classes</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

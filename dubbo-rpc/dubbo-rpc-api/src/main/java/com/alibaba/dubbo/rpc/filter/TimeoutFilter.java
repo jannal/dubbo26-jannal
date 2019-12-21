@@ -30,6 +30,7 @@ import java.util.Arrays;
 
 /**
  * Log any invocation timeout, but don't stop server from running
+ * 1. 如果某些服务调用超时，则自动记录告警日志
  */
 @Activate(group = Constants.PROVIDER)
 public class TimeoutFilter implements Filter {

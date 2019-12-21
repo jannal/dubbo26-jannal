@@ -27,7 +27,7 @@ import java.util.List;
 
 /**
  * AvailableCluster
- *
+ * 选择一个可以使用的Invoke调用
  */
 public class AvailableClusterInvoker<T> extends AbstractClusterInvoker<T> {
 

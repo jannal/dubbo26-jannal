@@ -26,7 +26,7 @@ import java.util.Random;
 
 /**
  * LeastActiveLoadBalance
- *
+ * 1. 最小活跃数负载均衡。活跃调用数越小，表明该服务提供者效率越高，单位时间内可处理更多的请求,应优先将请求分配给该服务提供者
  */
 public class LeastActiveLoadBalance extends AbstractLoadBalance {
 
@@ -37,10 +37,14 @@ public class LeastActiveLoadBalance extends AbstractLoadBalance {
     @Override
     protected <T> Invoker<T> doSelect(List<Invoker<T>> invokers, URL url, Invocation invocation) {
         int length = invokers.size(); // Number of invokers
+        //最小活跃数
         int leastActive = -1; // The least active value of all invokers
+        //具有相同"最小活跃数"的服务者提供者（以下用 Invoker 代称）数量
         int leastCount = 0; // The number of invokers having the same least active value (leastActive)
+        //leastIndexs 用于记录具有相同"最小活跃数"的 Invoker 在 invokers 列表中的下标信息
         int[] leastIndexs = new int[length]; // The index of invokers having the same least active value (leastActive)
         int totalWeight = 0; // The sum of with warmup weights
+        //第一个最小活跃数的 Invoker 权重值
         int firstWeight = 0; // Initial value, used for comparision
         boolean sameWeight = true; // Every invoker has the same weight value?
         for (int i = 0; i < length; i++) {

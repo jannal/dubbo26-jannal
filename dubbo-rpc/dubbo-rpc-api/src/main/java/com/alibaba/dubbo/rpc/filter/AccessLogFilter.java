@@ -58,6 +58,9 @@ import java.util.concurrent.TimeUnit;
  *    &lt;appender-ref ref="foo" /&gt;
  * &lt;/logger&gt;
  * </pre></code>
+ * 1. 打印每次的访问日志，如果需要访问的日志只出现在指定的appender中，
+ * 可以在log的配置文件中添加additivity
+ * 2. 用在provider
  */
 @Activate(group = Constants.PROVIDER, value = Constants.ACCESS_LOG_KEY)
 public class AccessLogFilter implements Filter {

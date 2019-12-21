@@ -39,6 +39,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * MonitorFilter. (SPI, Singleton, ThreadSafe)
+ * 1. 监控并统计所有的接口的调用情况，如成功、失败、耗时
+ * DubboMonitor会定时把该过滤收集的数据发送到监控服务上
  */
 @Activate(group = {Constants.PROVIDER, Constants.CONSUMER})
 public class MonitorFilter implements Filter {

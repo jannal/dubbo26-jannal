@@ -30,6 +30,8 @@ import com.alibaba.dubbo.rpc.RpcResult;
 
 /**
  * ConsumerContextInvokerFilter
+ * 为consumer把一些上下文信息设置到当前线程RpcContext对象中，
+ * 包括invocation、localhost、remote host等
  */
 @Activate(group = Constants.CONSUMER, order = -10000)
 public class ConsumerContextFilter implements Filter {

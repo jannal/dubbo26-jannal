@@ -31,6 +31,7 @@ import java.util.Set;
 
 /**
  * DeprecatedInvokerFilter
+ * 如果调用的方法被标记为启用，那么DeprecatedFilter将记录一个错误信息
  */
 @Activate(group = Constants.CONSUMER, value = Constants.DEPRECATED_KEY)
 public class DeprecatedFilter implements Filter {

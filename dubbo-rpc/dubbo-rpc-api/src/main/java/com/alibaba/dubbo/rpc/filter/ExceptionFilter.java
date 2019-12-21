@@ -42,6 +42,7 @@ import java.lang.reflect.Method;
  * exception not declared on the interface</li>
  * <li>Wrap the exception not introduced in API package into RuntimeException. Framework will serialize the outer exception but stringnize its cause in order to avoid of possible serialization problem on client side</li>
  * </ol>
+ * 用于统一的异常处理，防止出现自定义异常序列化失败
  */
 @Activate(group = Constants.PROVIDER)
 public class ExceptionFilter implements Filter {
@@ -60,6 +61,7 @@ public class ExceptionFilter implements Filter {
     public Result invoke(Invoker<?> invoker, Invocation invocation) throws RpcException {
         try {
             Result result = invoker.invoke(invocation);
+            // 如果有异常或者是泛化调用
             if (result.hasException() && GenericService.class != invoker.getInterface()) {
                 try {
                     Throwable exception = result.getException();
@@ -71,6 +73,7 @@ public class ExceptionFilter implements Filter {
                     // directly throw if the exception appears in the signature
                     try {
                         Method method = invoker.getInterface().getMethod(invocation.getMethodName(), invocation.getParameterTypes());
+                        //获取方法参数声明的异常
                         Class<?>[] exceptionClassses = method.getExceptionTypes();
                         for (Class<?> exceptionClass : exceptionClassses) {
                             if (exception.getClass().equals(exceptionClass)) {
@@ -93,6 +96,8 @@ public class ExceptionFilter implements Filter {
                         return result;
                     }
                     // directly throw if it's JDK exception
+                    //如果JDK异常就直接抛出，这样判断是不是有些草率？万一consumer和provider的JDK版本不一致
+                    //而抛出的异常在旧JDK版本里没有岂不是找不到？
                     String className = exception.getClass().getName();
                     if (className.startsWith("java.") || className.startsWith("javax.")) {
                         return result;
@@ -103,6 +108,7 @@ public class ExceptionFilter implements Filter {
                     }
 
                     // otherwise, wrap with RuntimeException and throw back to the client
+                    //将自定义异常封装为RuntimeException避免consumer序列化异常
                     return new RpcResult(new RuntimeException(StringUtils.toString(exception)));
                 } catch (Throwable e) {
                     logger.warn("Fail to ExceptionFilter when called by " + RpcContext.getContext().getRemoteHost()
