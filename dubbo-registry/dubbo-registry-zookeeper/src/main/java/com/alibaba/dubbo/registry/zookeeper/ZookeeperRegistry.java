@@ -129,6 +129,7 @@ public class ZookeeperRegistry extends FailbackRegistry {
     @Override
     protected void doSubscribe(final URL url, final NotifyListener listener) {
         try {
+            //如果是通配符*，表示
             if (Constants.ANY_VALUE.equals(url.getServiceInterface())) {
                 String root = toRootPath();
                 ConcurrentMap<NotifyListener, ChildListener> listeners = zkListeners.get(url);
@@ -143,6 +144,7 @@ public class ZookeeperRegistry extends FailbackRegistry {
                         public void childChanged(String parentPath, List<String> currentChilds) {
                             for (String child : currentChilds) {
                                 child = URL.decode(child);
+                                //如果存在子节点还没有被订阅，说明是新节点，则订阅
                                 if (!anyServices.contains(child)) {
                                     anyServices.add(child);
                                     subscribe(url.setPath(child).addParameters(Constants.INTERFACE_KEY, child,
@@ -153,9 +155,11 @@ public class ZookeeperRegistry extends FailbackRegistry {
                     });
                     zkListener = listeners.get(listener);
                 }
+                //创建持久节点
                 zkClient.create(root, false);
                 List<String> services = zkClient.addChildListener(root, zkListener);
                 if (services != null && !services.isEmpty()) {
+                    //遍历所有服务接口的子节点，进行订阅
                     for (String service : services) {
                         service = URL.decode(service);
                         anyServices.add(service);
@@ -187,6 +191,7 @@ public class ZookeeperRegistry extends FailbackRegistry {
                         urls.addAll(toUrlsWithEmpty(url, path, children));
                     }
                 }
+                //更新本地缓存
                 notify(url, listener, urls);
             }
         } catch (Throwable e) {

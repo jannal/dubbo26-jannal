@@ -33,6 +33,7 @@
         <module>dubbo-demo-provider</module>
         <module>dubbo-demo-consumer</module>
         <module>dubbo-demo-jannal</module>
+        <module>dubbo-demo-spi</module>
     </modules>
 
     <dependencyManagement>

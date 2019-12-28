@@ -280,8 +280,10 @@ public class ServiceConfig<T> extends AbstractServiceConfig {
             // 对 interfaceClass，以及 <dubbo:method> 标签中的必要字段进行检查
             checkInterfaceAndMethods(interfaceClass, methods);
             checkRef();
+            // 设置 generic = "false"
             generic = Boolean.FALSE.toString();
         }
+
         if (local != null) {
             if ("true".equals(local)) {
                 local = interfaceName + "Local";

@@ -47,15 +47,15 @@ public abstract class FailbackRegistry extends AbstractRegistry {
 
     // Timer for failure retry, regular check if there is a request for failure, and if there is, an unlimited retry
     private final ScheduledFuture<?> retryFuture;
-
+    //发起注册失败的URL集合
     private final Set<URL> failedRegistered = new ConcurrentHashSet<URL>();
-
+    //取消注册失败的URL集合
     private final Set<URL> failedUnregistered = new ConcurrentHashSet<URL>();
-
+    //发起订阅失败的监听器集合
     private final ConcurrentMap<URL, Set<NotifyListener>> failedSubscribed = new ConcurrentHashMap<URL, Set<NotifyListener>>();
-
+    //取消订阅失败的监听器集合
     private final ConcurrentMap<URL, Set<NotifyListener>> failedUnsubscribed = new ConcurrentHashMap<URL, Set<NotifyListener>>();
-
+    //通知失败的URL集合
     private final ConcurrentMap<URL, Map<NotifyListener, List<URL>>> failedNotified = new ConcurrentHashMap<URL, Map<NotifyListener, List<URL>>>();
 
     /**

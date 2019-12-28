@@ -1,0 +1,2 @@
+AImpl=cn.jannal.spi.activate.AInterfaceImpl
+BImpl=cn.jannal.spi.activate.BInterfaceImpl

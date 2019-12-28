@@ -1,0 +1,2 @@
+real=cn.jannal.spi.impl.RealBusinessImpl
+businessWrapper=cn.jannal.spi.impl.BusinessImplWrapper

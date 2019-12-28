@@ -435,6 +435,7 @@ public abstract class AbstractRegistry implements Registry {
             }
             properties.setProperty(url.getServiceKey(), buf.toString());
             long version = lastCacheChanged.incrementAndGet();
+            //同步与异步更新缓存
             if (syncSaveFile) {
                 doSaveProperties(version);
             } else {

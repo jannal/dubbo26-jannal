@@ -34,6 +34,7 @@ public abstract class AbstractCompiler implements Compiler {
     @Override
     public Class<?> compile(String code, ClassLoader classLoader) {
         code = code.trim();
+        //正则匹配包
         Matcher matcher = PACKAGE_PATTERN.matcher(code);
         String pkg;
         if (matcher.find()) {
@@ -41,6 +42,7 @@ public abstract class AbstractCompiler implements Compiler {
         } else {
             pkg = "";
         }
+        //正则匹配类
         matcher = CLASS_PATTERN.matcher(code);
         String cls;
         if (matcher.find()) {
@@ -48,10 +50,13 @@ public abstract class AbstractCompiler implements Compiler {
         } else {
             throw new IllegalArgumentException("No such class name in " + code);
         }
+        //类的全限定名称
         String className = pkg != null && pkg.length() > 0 ? pkg + "." + cls : cls;
         try {
+            //尝试加载该类并返回，如果已经存在就返回，避免重复编译，不存在就捕获异常
             return Class.forName(className, true, ClassHelper.getCallerClassLoader(getClass()));
         } catch (ClassNotFoundException e) {
+            //判断代码是不是以}结尾
             if (!code.endsWith("}")) {
                 throw new IllegalStateException("The java code not endsWith \"}\", code: \n" + code + "\n");
             }
