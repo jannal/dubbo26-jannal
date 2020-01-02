@@ -34,6 +34,7 @@
         <module>dubbo-demo-consumer</module>
         <module>dubbo-demo-jannal</module>
         <module>dubbo-demo-spi</module>
+        <module>dubbo-demo-spring</module>
     </modules>
 
     <dependencyManagement>

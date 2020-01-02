@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns="http://www.jannal.com/schema/rpc"
+            targetNamespace="http://www.jannal.com/schema/rpc"
+            elementFormDefault="qualified">
+
+    <xsd:element name="rpc-service" type="customType"/>
+    <xsd:complexType name="customType">
+        <xsd:attribute name="id" type="xsd:string">
+        </xsd:attribute>
+        <xsd:attribute name="contact" type="xsd:string">
+        </xsd:attribute>
+        <xsd:attribute name="serviceName" type="xsd:string">
+        </xsd:attribute>
+        <xsd:attribute name="serviceImplName" type="xsd:string">
+        </xsd:attribute>
+    </xsd:complexType>
+
+</xsd:schema>
