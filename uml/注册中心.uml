@@ -5,8 +5,8 @@
   <nodes>
     <node x="997.0" y="334.0">com.alibaba.dubbo.registry.support.FailbackRegistryTest.MockRegistry</node>
     <node x="1064.0" y="572.0">com.alibaba.dubbo.registry.dubbo.DubboRegistryFactory</node>
-    <node x="776.0" y="334.0">com.alibaba.dubbo.registry.multicast.MulticastRegistry</node>
     <node x="557.25" y="0.0">com.alibaba.dubbo.registry.RegistryService</node>
+    <node x="776.0" y="334.0">com.alibaba.dubbo.registry.multicast.MulticastRegistry</node>
     <node x="284.0" y="572.0">com.alibaba.dubbo.registry.nacos.NacosRegistryFactory</node>
     <node x="554.5" y="410.0">com.alibaba.dubbo.registry.RegistryFactory</node>
     <node x="185.0" y="334.0">com.alibaba.dubbo.registry.dubbo.DubboRegistry</node>
@@ -14,10 +14,10 @@
     <node x="780.0" y="572.0">com.alibaba.dubbo.registry.multicast.MulticastRegistryFactory</node>
     <node x="476.0" y="162.0">com.alibaba.dubbo.registry.support.AbstractRegistry</node>
     <node x="518.5" y="491.0">com.alibaba.dubbo.registry.support.AbstractRegistryFactory</node>
-    <node x="591.0" y="334.0">com.alibaba.dubbo.registry.redis.RedisRegistry</node>
-    <node x="532.0" y="572.0">com.alibaba.dubbo.registry.redis.RedisRegistryFactory</node>
     <node x="453.25" y="0.0">com.alibaba.dubbo.common.Node</node>
     <node x="512.0" y="81.0">com.alibaba.dubbo.registry.Registry</node>
+    <node x="591.0" y="334.0">com.alibaba.dubbo.registry.redis.RedisRegistry</node>
+    <node x="532.0" y="572.0">com.alibaba.dubbo.registry.redis.RedisRegistryFactory</node>
     <node x="370.0" y="334.0">com.alibaba.dubbo.registry.zookeeper.ZookeeperRegistry</node>
     <node x="0.0" y="334.0">com.alibaba.dubbo.registry.nacos.NacosRegistry</node>
     <node x="0.0" y="572.0">com.alibaba.dubbo.registry.zookeeper.ZookeeperRegistryFactory</node>
@@ -46,15 +46,15 @@
       <point x="492.0" y="294.0" />
       <point x="-80.0" y="15.5" />
     </edge>
-    <edge source="com.alibaba.dubbo.registry.support.AbstractRegistryFactory" target="com.alibaba.dubbo.registry.RegistryFactory">
-      <point x="0.0" y="-15.5" />
-      <point x="0.0" y="15.5" />
-    </edge>
     <edge source="com.alibaba.dubbo.registry.zookeeper.ZookeeperRegistryFactory" target="com.alibaba.dubbo.registry.support.AbstractRegistryFactory">
       <point x="0.0" y="-15.5" />
       <point x="132.0" y="542.0" />
       <point x="544.0" y="542.0" />
       <point x="-102.0" y="15.5" />
+    </edge>
+    <edge source="com.alibaba.dubbo.registry.support.AbstractRegistryFactory" target="com.alibaba.dubbo.registry.RegistryFactory">
+      <point x="0.0" y="-15.5" />
+      <point x="0.0" y="15.5" />
     </edge>
     <edge source="com.alibaba.dubbo.registry.dubbo.DubboRegistryFactory" target="com.alibaba.dubbo.registry.support.AbstractRegistryFactory">
       <point x="0.0" y="-15.5" />
@@ -113,8 +113,10 @@
       <point x="-48.0" y="15.5" />
     </edge>
   </edges>
-  <settings layout="Hierarchic Group" zoom="0.96875" x="646.0" y="301.5" />
-  <SelectedNodes />
+  <settings layout="Hierarchic Group" zoom="0.7705792682926829" x="646.0" y="301.5" />
+  <SelectedNodes>
+    <node>com.alibaba.dubbo.registry.support.FailbackRegistry</node>
+  </SelectedNodes>
   <Categories />
   <SCOPE>All</SCOPE>
   <VISIBILITY>private</VISIBILITY>

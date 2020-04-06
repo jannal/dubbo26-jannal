@@ -11,6 +11,12 @@
   </nodes>
   <notes />
   <edges>
+    <edge source="com.alibaba.dubbo.config.spring.extension.SpringExtensionFactory" target="com.alibaba.dubbo.common.extension.ExtensionFactory">
+      <point x="0.0" y="-15.5" />
+      <point x="123.0" y="137.0" />
+      <point x="334.0" y="137.0" />
+      <point x="-64.0" y="15.5" />
+    </edge>
     <edge source="com.alibaba.dubbo.common.extension.factory.AdaptiveExtensionFactory" target="com.alibaba.dubbo.common.extension.ExtensionFactory">
       <point x="0.0" y="-15.5" />
       <point x="0.0" y="15.5" />
@@ -19,12 +25,6 @@
       <point x="0.0" y="-15.5" />
       <point x="0.0" y="15.5" />
     </edge>
-    <edge source="com.alibaba.dubbo.config.spring.extension.SpringExtensionFactory" target="com.alibaba.dubbo.common.extension.ExtensionFactory">
-      <point x="0.0" y="-15.5" />
-      <point x="123.0" y="137.0" />
-      <point x="334.0" y="137.0" />
-      <point x="-64.0" y="15.5" />
-    </edge>
     <edge source="com.alibaba.dubbo.common.extension.factory.SpiExtensionFactory" target="com.alibaba.dubbo.common.extension.ExtensionFactory">
       <point x="0.0" y="-15.5" />
       <point x="659.5" y="137.0" />
@@ -32,8 +32,10 @@
       <point x="64.0" y="15.5" />
     </edge>
   </edges>
-  <settings layout="Hierarchic Group" zoom="1.0" x="253.0" y="56.0" />
-  <SelectedNodes />
+  <settings layout="Hierarchic Group" zoom="1.0" x="384.5" y="96.5" />
+  <SelectedNodes>
+    <node>com.alibaba.dubbo.common.extension.ExtensionFactory</node>
+  </SelectedNodes>
   <Categories />
   <SCOPE>All</SCOPE>
   <VISIBILITY>private</VISIBILITY>

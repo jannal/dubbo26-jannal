@@ -7,8 +7,8 @@
     <node x="203.0" y="324.0">com.alibaba.dubbo.registry.integration.RegistryDirectory.InvokerComparator</node>
     <node x="355.75" y="162.0">com.alibaba.dubbo.rpc.cluster.directory.AbstractDirectory</node>
     <node x="424.0" y="324.0">com.alibaba.dubbo.rpc.cluster.support.FailoverClusterInvokerTest.MockDirectory</node>
-    <node x="391.75" y="81.0">com.alibaba.dubbo.rpc.cluster.Directory</node>
     <node x="209.0" y="0.0">com.alibaba.dubbo.common.Node</node>
+    <node x="391.75" y="81.0">com.alibaba.dubbo.rpc.cluster.Directory</node>
     <node x="415.0" y="243.0">com.alibaba.dubbo.rpc.cluster.directory.StaticDirectory</node>
     <node x="152.75" y="243.0">com.alibaba.dubbo.registry.integration.RegistryDirectory</node>
     <node x="116.0" y="162.0">com.alibaba.dubbo.registry.NotifyListener</node>
@@ -31,13 +31,13 @@
       <point x="0.0" y="-15.5" />
       <point x="50.25" y="15.5" />
     </edge>
-    <edge source="com.alibaba.dubbo.rpc.cluster.directory.StaticDirectory" target="com.alibaba.dubbo.rpc.cluster.directory.AbstractDirectory">
-      <point x="0.0" y="-15.5" />
-      <point x="50.25" y="15.5" />
-    </edge>
     <edge source="com.alibaba.dubbo.rpc.cluster.directory.AbstractDirectory" target="com.alibaba.dubbo.rpc.cluster.Directory">
       <point x="0.0" y="-15.5" />
       <point x="0.0" y="15.5" />
+    </edge>
+    <edge source="com.alibaba.dubbo.rpc.cluster.directory.StaticDirectory" target="com.alibaba.dubbo.rpc.cluster.directory.AbstractDirectory">
+      <point x="0.0" y="-15.5" />
+      <point x="50.25" y="15.5" />
     </edge>
     <edge source="com.alibaba.dubbo.registry.integration.RegistryDirectory.InvokerDelegate" target="com.alibaba.dubbo.registry.integration.RegistryDirectory">
       <point x="45.75" y="-15.5" />
@@ -60,8 +60,10 @@
       <point x="0.0" y="15.5" />
     </edge>
   </edges>
-  <settings layout="Hierarchic Group" zoom="1.0" x="412.5" y="243.5" />
-  <SelectedNodes />
+  <settings layout="Hierarchic Group" zoom="1.0" x="299.0" y="177.5" />
+  <SelectedNodes>
+    <node>com.alibaba.dubbo.rpc.cluster.directory.AbstractDirectory</node>
+  </SelectedNodes>
   <Categories>
     <Category>Inner Classes</Category>
   </Categories>

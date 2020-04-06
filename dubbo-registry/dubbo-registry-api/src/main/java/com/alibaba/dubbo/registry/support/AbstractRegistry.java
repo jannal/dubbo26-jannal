@@ -62,23 +62,33 @@ public abstract class AbstractRegistry implements Registry {
     // Log output
     protected final Logger logger = LoggerFactory.getLogger(getClass());
     // Local disk cache, where the special key value.registies records the list of registry centers, and the others are the list of notified service providers
+    //本地磁盘缓存，有一个特殊的key值为registies，记录的是注册中心列表，其他记录的都是服务提供者列表
     private final Properties properties = new Properties();
     // File cache timing writing
     private final ExecutorService registryCacheExecutor = Executors.newFixedThreadPool(1, new NamedThreadFactory("DubboSaveRegistryCache", true));
     // Is it synchronized to save the file
+    //是否同步保存文件
     private final boolean syncSaveFile;
+    //上次缓存更新的版本号
     private final AtomicLong lastCacheChanged = new AtomicLong();
+    //已经注册的URL集合
     private final Set<URL> registered = new ConcurrentHashSet<URL>();
+    //订阅的监听器集合
     private final ConcurrentMap<URL, Set<NotifyListener>> subscribed = new ConcurrentHashMap<URL, Set<NotifyListener>>();
+    // 某个消费者 被通知的 服务URL 集合
     private final ConcurrentMap<URL, Map<String, List<URL>>> notified = new ConcurrentHashMap<URL, Map<String, List<URL>>>();
+    //注册中心URL
     private URL registryUrl;
     // Local disk cache file
+    //本地磁盘缓存文件，用于缓存注册中心的数据
     private File file;
 
     public AbstractRegistry(URL url) {
         setUrl(url);
         // Start file save timer
+        //读取是否同步保存文件，默认false
         syncSaveFile = url.getParameter(Constants.REGISTRY_FILESAVE_SYNC_KEY, false);
+        //缓存文件全路径
         String filename = url.getParameter(Constants.FILE_KEY, System.getProperty("user.home") + "/.dubbo/dubbo-registry-" + url.getParameter(Constants.APPLICATION_KEY) + "-" + url.getAddress() + ".cache");
         File file = null;
         if (ConfigUtils.isNotEmpty(filename)) {
@@ -90,6 +100,7 @@ public abstract class AbstractRegistry implements Registry {
             }
         }
         this.file = file;
+        //加载文件中缓存的内容到Properties
         loadProperties();
         notify(url.getBackupUrls());
     }
@@ -140,6 +151,7 @@ public abstract class AbstractRegistry implements Registry {
     }
 
     public void doSaveProperties(long version) {
+        //比较版本号
         if (version < lastCacheChanged.get()) {
             return;
         }
@@ -322,8 +334,13 @@ public abstract class AbstractRegistry implements Registry {
         }
     }
 
+    /**
+     * 恢复，注册中心断开，重连成功的时候，会恢复注册和订阅
+     * @throws Exception
+     */
     protected void recover() throws Exception {
         // register
+        //遍历已经注册的（内存中缓存的），重新注册
         Set<URL> recoverRegistered = new HashSet<URL>(getRegistered());
         if (!recoverRegistered.isEmpty()) {
             if (logger.isInfoEnabled()) {
@@ -334,6 +351,7 @@ public abstract class AbstractRegistry implements Registry {
             }
         }
         // subscribe
+        //遍历已经订阅的（内存中缓存的），重新订阅
         Map<URL, Set<NotifyListener>> recoverSubscribed = new HashMap<URL, Set<NotifyListener>>(getSubscribed());
         if (!recoverSubscribed.isEmpty()) {
             if (logger.isInfoEnabled()) {

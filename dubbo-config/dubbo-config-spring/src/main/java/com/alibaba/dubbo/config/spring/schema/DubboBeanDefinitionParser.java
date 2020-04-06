@@ -73,10 +73,12 @@ public class DubboBeanDefinitionParser implements BeanDefinitionParser {
 
     @SuppressWarnings("unchecked")
     private static BeanDefinition parse(Element element, ParserContext parserContext, Class<?> beanClass, boolean required) {
+        //生成Spring的Bean定义
         RootBeanDefinition beanDefinition = new RootBeanDefinition();
         beanDefinition.setBeanClass(beanClass);
         beanDefinition.setLazyInit(false);
         String id = element.getAttribute("id");
+        //判断是否有重复的Bean Id
         if ((id == null || id.length() == 0) && required) {
             String generatedBeanName = element.getAttribute("name");
             if (generatedBeanName == null || generatedBeanName.length() == 0) {

@@ -3,8 +3,8 @@
   <ID>JAVA</ID>
   <OriginalElement>com.alibaba.dubbo.common.compiler.Compiler</OriginalElement>
   <nodes>
-    <node x="313.49999999999994" y="162.0">com.alibaba.dubbo.common.compiler.support.AdaptiveCompiler</node>
     <node x="265.99999999999994" y="0.0">com.alibaba.dubbo.common.extension.SPI</node>
+    <node x="313.49999999999994" y="162.0">com.alibaba.dubbo.common.compiler.support.AdaptiveCompiler</node>
     <node x="243.49999999999994" y="81.0">com.alibaba.dubbo.common.compiler.Compiler</node>
     <node x="0.0" y="243.0">com.alibaba.dubbo.common.compiler.support.JavassistCompiler</node>
     <node x="101.49999999999997" y="162.0">com.alibaba.dubbo.common.compiler.support.AbstractCompiler</node>
@@ -17,12 +17,6 @@
       <point x="100.5" y="218.0" />
       <point x="149.49999999999997" y="218.0" />
       <point x="-48.0" y="15.5" />
-    </edge>
-    <edge source="com.alibaba.dubbo.common.compiler.support.AbstractCompiler" target="com.alibaba.dubbo.common.compiler.Compiler">
-      <point x="0.0" y="-15.5" />
-      <point x="197.49999999999997" y="137.0" />
-      <point x="273.49999999999994" y="137.0" />
-      <point x="-30.0" y="15.5" />
     </edge>
     <edge source="com.alibaba.dubbo.common.compiler.support.AdaptiveCompiler" target="com.alibaba.dubbo.common.compiler.Compiler">
       <point x="0.0" y="-15.5" />
@@ -40,9 +34,17 @@
       <point x="245.49999999999997" y="218.0" />
       <point x="48.0" y="15.5" />
     </edge>
+    <edge source="com.alibaba.dubbo.common.compiler.support.AbstractCompiler" target="com.alibaba.dubbo.common.compiler.Compiler">
+      <point x="0.0" y="-15.5" />
+      <point x="197.49999999999997" y="137.0" />
+      <point x="273.49999999999994" y="137.0" />
+      <point x="-30.0" y="15.5" />
+    </edge>
   </edges>
-  <settings layout="Hierarchic Group" zoom="1.0" x="60.0" y="56.0" />
-  <SelectedNodes />
+  <settings layout="Hierarchic Group" zoom="1.0" x="253.0" y="137.0" />
+  <SelectedNodes>
+    <node>com.alibaba.dubbo.common.compiler.Compiler</node>
+  </SelectedNodes>
   <Categories />
   <SCOPE>All</SCOPE>
   <VISIBILITY>private</VISIBILITY>
