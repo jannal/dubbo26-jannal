@@ -39,7 +39,6 @@ import java.util.Set;
  * Note that retry causes latency.
  * <p>
  * <a href="http://en.wikipedia.org/wiki/Failover">Failover</a>
- *
  */
 public class FailoverClusterInvoker<T> extends AbstractClusterInvoker<T> {
 
@@ -52,6 +51,7 @@ public class FailoverClusterInvoker<T> extends AbstractClusterInvoker<T> {
     @Override
     @SuppressWarnings({"unchecked", "rawtypes"})
     public Result doInvoke(Invocation invocation, final List<Invoker<T>> invokers, LoadBalance loadbalance) throws RpcException {
+        //所有的服务提供者
         List<Invoker<T>> copyinvokers = invokers;
         checkInvokers(copyinvokers, invocation);
         //获取重试次数，默认值是2
@@ -59,7 +59,7 @@ public class FailoverClusterInvoker<T> extends AbstractClusterInvoker<T> {
         if (len <= 0) {
             len = 1;
         }
-        // retry loop.
+        // retry loop. 失败重试循环
         RpcException le = null; // last exception.
         List<Invoker<T>> invoked = new ArrayList<Invoker<T>>(copyinvokers.size()); // invoked invokers.
         Set<String> providers = new HashSet<String>(len);
@@ -68,15 +68,19 @@ public class FailoverClusterInvoker<T> extends AbstractClusterInvoker<T> {
             //NOTE: if `invokers` changed, then `invoked` also lose accuracy.
             //重试前重新选择，如果某个服务提供者挂了，可以及时感知最新可用的
             if (i > 0) {
+                //检查实例是否销毁（是否有其他线程调用消费者的销毁）
                 checkWhetherDestroyed();
+                //重新获取所有的服务提供者
                 copyinvokers = list(invocation);
-                // check again
+                // check again 再次检查服务提供者是否为空
                 checkInvokers(copyinvokers, invocation);
             }
+            //选择负载均衡策略
             Invoker<T> invoker = select(loadbalance, invocation, copyinvokers, invoked);
             invoked.add(invoker);
             RpcContext.getContext().setInvokers((List) invoked);
             try {
+                //发起远程调用
                 Result result = invoker.invoke(invocation);
                 if (le != null && logger.isWarnEnabled()) {
                     logger.warn("Although retry the method " + invocation.getMethodName()

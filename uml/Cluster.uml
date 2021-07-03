@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>com.alibaba.dubbo.rpc.cluster.Cluster</OriginalElement>
+  <nodes>
+    <node x="603.0" y="123.0">com.alibaba.dubbo.rpc.cluster.support.FailbackCluster</node>
+    <node x="1233.0" y="123.0">com.alibaba.dubbo.rpc.cluster.support.FailoverCluster</node>
+    <node x="807.0" y="123.0">com.alibaba.dubbo.rpc.cluster.support.AvailableCluster</node>
+    <node x="0.0" y="123.0">com.alibaba.dubbo.rpc.cluster.support.FailsafeCluster</node>
+    <node x="204.0" y="123.0">com.alibaba.dubbo.rpc.cluster.support.ForkingCluster</node>
+    <node x="399.0" y="123.0">com.alibaba.dubbo.rpc.cluster.support.FailfastCluster</node>
+    <node x="1437.0" y="123.0">com.alibaba.dubbo.rpc.cluster.support.BroadcastCluster</node>
+    <node x="743.25" y="0.0">com.alibaba.dubbo.rpc.cluster.Cluster</node>
+    <node x="1020.0" y="123.0">com.alibaba.dubbo.rpc.cluster.support.MergeableCluster</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="com.alibaba.dubbo.rpc.cluster.support.ForkingCluster" target="com.alibaba.dubbo.rpc.cluster.Cluster">
+      <point x="0.0" y="-26.5" />
+      <point x="291.5" y="83.0" />
+      <point x="764.25" y="83.0" />
+      <point x="-35.0" y="26.5" />
+    </edge>
+    <edge source="com.alibaba.dubbo.rpc.cluster.support.FailsafeCluster" target="com.alibaba.dubbo.rpc.cluster.Cluster">
+      <point x="0.0" y="-26.5" />
+      <point x="92.0" y="73.0" />
+      <point x="750.25" y="73.0" />
+      <point x="-49.0" y="26.5" />
+    </edge>
+    <edge source="com.alibaba.dubbo.rpc.cluster.support.FailbackCluster" target="com.alibaba.dubbo.rpc.cluster.Cluster">
+      <point x="0.0" y="-26.5" />
+      <point x="695.0" y="103.0" />
+      <point x="792.25" y="103.0" />
+      <point x="-7.0" y="26.5" />
+    </edge>
+    <edge source="com.alibaba.dubbo.rpc.cluster.support.BroadcastCluster" target="com.alibaba.dubbo.rpc.cluster.Cluster">
+      <point x="0.0" y="-26.5" />
+      <point x="1533.5" y="73.0" />
+      <point x="848.25" y="73.0" />
+      <point x="49.0" y="26.5" />
+    </edge>
+    <edge source="com.alibaba.dubbo.rpc.cluster.support.FailoverCluster" target="com.alibaba.dubbo.rpc.cluster.Cluster">
+      <point x="0.0" y="-26.5" />
+      <point x="1325.0" y="83.0" />
+      <point x="834.25" y="83.0" />
+      <point x="35.0" y="26.5" />
+    </edge>
+    <edge source="com.alibaba.dubbo.rpc.cluster.support.AvailableCluster" target="com.alibaba.dubbo.rpc.cluster.Cluster">
+      <point x="0.0" y="-26.5" />
+      <point x="903.5" y="103.0" />
+      <point x="806.25" y="103.0" />
+      <point x="7.0" y="26.5" />
+    </edge>
+    <edge source="com.alibaba.dubbo.rpc.cluster.support.MergeableCluster" target="com.alibaba.dubbo.rpc.cluster.Cluster">
+      <point x="0.0" y="-26.5" />
+      <point x="1116.5" y="93.0" />
+      <point x="820.25" y="93.0" />
+      <point x="21.0" y="26.5" />
+    </edge>
+    <edge source="com.alibaba.dubbo.rpc.cluster.support.FailfastCluster" target="com.alibaba.dubbo.rpc.cluster.Cluster">
+      <point x="0.0" y="-26.5" />
+      <point x="491.0" y="93.0" />
+      <point x="778.25" y="93.0" />
+      <point x="-21.0" y="26.5" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="1.0" x="438.99999999999994" y="78.50000000000009" />
+  <SelectedNodes />
+  <Categories />
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

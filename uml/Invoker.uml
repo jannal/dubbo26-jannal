@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>com.alibaba.dubbo.rpc.Invoker</OriginalElement>
+  <nodes>
+    <node x="1344.0" y="329.0">com.alibaba.dubbo.rpc.cluster.support.AvailableClusterInvoker</node>
+    <node x="1011.0" y="103.0">com.alibaba.dubbo.rpc.Invoker</node>
+    <node x="1620.0" y="329.0">com.alibaba.dubbo.rpc.cluster.support.ForkingClusterInvoker</node>
+    <node x="0.0" y="329.0">com.alibaba.dubbo.rpc.cluster.support.FailsafeClusterInvoker</node>
+    <node x="267.0" y="329.0">com.alibaba.dubbo.rpc.cluster.support.FailoverClusterInvoker</node>
+    <node x="1878.0" y="329.0">com.alibaba.dubbo.rpc.cluster.StickyTest.StickyClusterInvoker</node>
+    <node x="943.5" y="206.0">com.alibaba.dubbo.rpc.cluster.support.AbstractClusterInvoker</node>
+    <node x="1024.5" y="0.0">com.alibaba.dubbo.common.Node</node>
+    <node x="534.0" y="329.0">com.alibaba.dubbo.rpc.cluster.support.BroadcastClusterInvoker</node>
+    <node x="810.0" y="329.0">com.alibaba.dubbo.rpc.cluster.support.FailbackClusterInvoker</node>
+    <node x="1077.0" y="329.0">com.alibaba.dubbo.rpc.cluster.support.FailfastClusterInvoker</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="com.alibaba.dubbo.rpc.cluster.support.AvailableClusterInvoker" target="com.alibaba.dubbo.rpc.cluster.support.AbstractClusterInvoker">
+      <point x="0.0" y="-26.5" />
+      <point x="1472.0" y="299.0" />
+      <point x="1113.3125" y="299.0" />
+      <point x="46.3125" y="26.5" />
+    </edge>
+    <edge source="com.alibaba.dubbo.rpc.cluster.support.FailsafeClusterInvoker" target="com.alibaba.dubbo.rpc.cluster.support.AbstractClusterInvoker">
+      <point x="0.0" y="-26.5" />
+      <point x="123.5" y="279.0" />
+      <point x="958.9375" y="279.0" />
+      <point x="-108.0625" y="26.5" />
+    </edge>
+    <edge source="com.alibaba.dubbo.rpc.cluster.support.ForkingClusterInvoker" target="com.alibaba.dubbo.rpc.cluster.support.AbstractClusterInvoker">
+      <point x="0.0" y="-26.5" />
+      <point x="1739.0" y="289.0" />
+      <point x="1144.1875" y="289.0" />
+      <point x="77.1875" y="26.5" />
+    </edge>
+    <edge source="com.alibaba.dubbo.rpc.cluster.support.FailoverClusterInvoker" target="com.alibaba.dubbo.rpc.cluster.support.AbstractClusterInvoker">
+      <point x="0.0" y="-26.5" />
+      <point x="390.5" y="289.0" />
+      <point x="989.8125" y="289.0" />
+      <point x="-77.1875" y="26.5" />
+    </edge>
+    <edge source="com.alibaba.dubbo.rpc.cluster.support.FailfastClusterInvoker" target="com.alibaba.dubbo.rpc.cluster.support.AbstractClusterInvoker">
+      <point x="0.0" y="-26.5" />
+      <point x="1200.5" y="309.0" />
+      <point x="1082.4375" y="309.0" />
+      <point x="15.4375" y="26.5" />
+    </edge>
+    <edge source="com.alibaba.dubbo.rpc.Invoker" target="com.alibaba.dubbo.common.Node">
+      <point x="0.0" y="-26.5" />
+      <point x="0.0" y="26.5" />
+    </edge>
+    <edge source="com.alibaba.dubbo.rpc.cluster.support.AbstractClusterInvoker" target="com.alibaba.dubbo.rpc.Invoker">
+      <point x="0.0" y="-26.5" />
+      <point x="0.0" y="26.5" />
+    </edge>
+    <edge source="com.alibaba.dubbo.rpc.cluster.support.FailbackClusterInvoker" target="com.alibaba.dubbo.rpc.cluster.support.AbstractClusterInvoker">
+      <point x="0.0" y="-26.5" />
+      <point x="933.5" y="309.0" />
+      <point x="1051.5625" y="309.0" />
+      <point x="-15.4375" y="26.5" />
+    </edge>
+    <edge source="com.alibaba.dubbo.rpc.cluster.StickyTest.StickyClusterInvoker" target="com.alibaba.dubbo.rpc.cluster.support.AbstractClusterInvoker">
+      <point x="0.0" y="-26.5" />
+      <point x="1992.5" y="279.0" />
+      <point x="1175.0625" y="279.0" />
+      <point x="108.0625" y="26.5" />
+    </edge>
+    <edge source="com.alibaba.dubbo.rpc.cluster.support.BroadcastClusterInvoker" target="com.alibaba.dubbo.rpc.cluster.support.AbstractClusterInvoker">
+      <point x="0.0" y="-26.5" />
+      <point x="662.0" y="299.0" />
+      <point x="1020.6875" y="299.0" />
+      <point x="-46.3125" y="26.5" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="1.0" x="663.0" y="82.0" />
+  <SelectedNodes />
+  <Categories />
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

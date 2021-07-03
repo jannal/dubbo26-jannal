@@ -22,9 +22,9 @@ import com.alibaba.dubbo.common.threadlocal.NamedInternalThreadFactory;
 import com.alibaba.dubbo.rpc.Invocation;
 import com.alibaba.dubbo.rpc.Invoker;
 import com.alibaba.dubbo.rpc.Result;
+import com.alibaba.dubbo.rpc.RpcContext;
 import com.alibaba.dubbo.rpc.RpcException;
 import com.alibaba.dubbo.rpc.RpcResult;
-import com.alibaba.dubbo.rpc.RpcContext;
 import com.alibaba.dubbo.rpc.cluster.Directory;
 import com.alibaba.dubbo.rpc.cluster.LoadBalance;
 
@@ -76,6 +76,7 @@ public class FailbackClusterInvoker<T> extends AbstractClusterInvoker<T> {
                         public void run() {
                             // collect retry statistics
                             try {
+                                //重试任务
                                 retryFailed();
                             } catch (Throwable t) { // Defensive fault tolerance
                                 logger.error("Unexpected error occur at collect statistic", t);
@@ -92,15 +93,18 @@ public class FailbackClusterInvoker<T> extends AbstractClusterInvoker<T> {
         if (failed.size() == 0) {
             return;
         }
+        // 遍历 failed，对失败的调用进行重试
         for (Map.Entry<Invocation, AbstractClusterInvoker<?>> entry : new HashMap<Invocation, AbstractClusterInvoker<?>>(
                 failed).entrySet()) {
             Invocation invocation = entry.getKey();
             Invoker<?> invoker = entry.getValue();
             try {
+                //再次发起远程调用
                 invoker.invoke(invocation);
-                // 调用成功后，从 failed 中移除 invoker
+                //调用成功后，从 failed 中移除 invoker
                 failed.remove(invocation);
             } catch (Throwable e) {
+                //只打印异常，不做其他处理，等待下次定时调用
                 logger.error("Failed retry to invoke method " + invocation.getMethodName() + ", waiting again.", e);
             }
         }
@@ -109,12 +113,16 @@ public class FailbackClusterInvoker<T> extends AbstractClusterInvoker<T> {
     @Override
     protected Result doInvoke(Invocation invocation, List<Invoker<T>> invokers, LoadBalance loadbalance) throws RpcException {
         try {
+            //检查invokers是否合法，及是否为空
             checkInvokers(invokers, invocation);
+            //根据负载均衡策略选择一个invoker
             Invoker<T> invoker = select(loadbalance, invocation, invokers, null);
+            //远程调用
             return invoker.invoke(invocation);
         } catch (Throwable e) {
             logger.error("Failback to invoke method " + invocation.getMethodName() + ", wait for retry in background. Ignored exception: "
                     + e.getMessage() + ", ", e);
+            //如果失败则添加到定时器中
             addFailed(invocation, this);
             return new RpcResult(); // ignore
         }

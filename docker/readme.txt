@@ -1,8 +1,10 @@
 1. mac下安装docker网络插件(https://github.com/AlmirKadric-Published/docker-tuntap-osx.git)
 $ ./sbin/docker_tap_install.sh
-$ ./sbin/docker_tap_up.sh
-$ brew tap caskroom/cask
+$ ./sbin/docker_tap_up.sh 每次重启机器都要再次运行
+//$ brew tap caskroom/cask
 $ brew cask install tuntap
+
+sudo -u $(ps aux |grep '[d]ocker.hyperkit' |cut -d' ' -f1) ./sbin/docker_tap_install.sh -f
 
 1. 添加路由
 //sudo route add 172.30.0.0/16 10.0.75.2

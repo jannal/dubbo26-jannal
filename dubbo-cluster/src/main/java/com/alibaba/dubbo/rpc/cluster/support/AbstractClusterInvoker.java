@@ -25,10 +25,10 @@ import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.alibaba.dubbo.common.utils.NetUtils;
 import com.alibaba.dubbo.rpc.Invocation;
 import com.alibaba.dubbo.rpc.Invoker;
-import com.alibaba.dubbo.rpc.RpcContext;
-import com.alibaba.dubbo.rpc.RpcInvocation;
 import com.alibaba.dubbo.rpc.Result;
+import com.alibaba.dubbo.rpc.RpcContext;
 import com.alibaba.dubbo.rpc.RpcException;
+import com.alibaba.dubbo.rpc.RpcInvocation;
 import com.alibaba.dubbo.rpc.cluster.Directory;
 import com.alibaba.dubbo.rpc.cluster.LoadBalance;
 import com.alibaba.dubbo.rpc.support.RpcUtils;
@@ -40,7 +40,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * AbstractClusterInvoker
- *
  */
 public abstract class AbstractClusterInvoker<T> implements Invoker<T> {
 
@@ -95,16 +94,16 @@ public abstract class AbstractClusterInvoker<T> implements Invoker<T> {
 
     /**
      * Select a invoker using loadbalance policy.</br>
-     * a)Firstly, select an invoker using loadbalance. If this invoker is in previously selected list, or, 
+     * a)Firstly, select an invoker using loadbalance. If this invoker is in previously selected list, or,
      * if this invoker is unavailable, then continue step b (reselect), otherwise return the first selected invoker</br>
      * b)Reslection, the validation rule for reselection: selected > available. This rule guarantees that
-     * the selected invoker has the minimum chance to be one in the previously selected list, and also 
+     * the selected invoker has the minimum chance to be one in the previously selected list, and also
      * guarantees this invoker is available.
      *
      * @param loadbalance load balance policy
      * @param invocation
-     * @param invokers invoker candidates
-     * @param selected  exclude selected invokers or not
+     * @param invokers    invoker candidates
+     * @param selected    exclude selected invokers or not
      * @return
      * @throws RpcException
      */
@@ -238,13 +237,14 @@ public abstract class AbstractClusterInvoker<T> implements Invoker<T> {
         if (contextAttachments != null && contextAttachments.size() != 0) {
             ((RpcInvocation) invocation).addAttachments(contextAttachments);
         }
-
+        //从RegistryDirectory管理的RouterChain的route（）方法中获取保存的invoker列表
         List<Invoker<T>> invokers = list(invocation);
         if (invokers != null && !invokers.isEmpty()) {
             loadbalance = ExtensionLoader.getExtensionLoader(LoadBalance.class).getExtension(invokers.get(0).getUrl()
                     .getMethodParameter(RpcUtils.getMethodName(invocation), Constants.LOADBALANCE_KEY, Constants.DEFAULT_LOADBALANCE));
         }
         RpcUtils.attachInvocationIdIfAsync(getUrl(), invocation);
+        //子类实现具体的逻辑
         return doInvoke(invocation, invokers, loadbalance);
     }
 
