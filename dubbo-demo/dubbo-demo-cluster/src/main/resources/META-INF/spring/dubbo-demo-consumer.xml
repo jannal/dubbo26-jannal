@@ -24,6 +24,8 @@
 
     <dubbo:application name="demo-consumer-cluster"/>
     <dubbo:registry address="zookeeper://dubbo-zookeeper:2181"/>
-    <dubbo:reference id="demoService" check="false" interface="com.alibaba.dubbo.demo.DemoService" cluster="log"/>
+    <!-- <dubbo:reference id="demoService" check="false" interface="com.alibaba.dubbo.demo.DemoService" cluster="log"/>-->
+    <dubbo:reference id="demoService" check="false" interface="com.alibaba.dubbo.demo.DemoService"
+                     loadbalance="myLoadBalance"/>
 
 </beans>

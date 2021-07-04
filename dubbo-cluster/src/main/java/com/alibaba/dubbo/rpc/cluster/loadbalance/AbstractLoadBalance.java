@@ -26,7 +26,6 @@ import java.util.List;
 
 /**
  * AbstractLoadBalance
- *
  */
 public abstract class AbstractLoadBalance implements LoadBalance {
 
@@ -49,7 +48,7 @@ public abstract class AbstractLoadBalance implements LoadBalance {
     protected abstract <T> Invoker<T> doSelect(List<Invoker<T>> invokers, URL url, Invocation invocation);
 
     protected int getWeight(Invoker<?> invoker, Invocation invocation) {
-        // 从 url 中获取权重 weight(权重) 配置值
+        // 从 url 中获取权重 weight(权重) 配置值，默认是100
         int weight = invoker.getUrl().getMethodParameter(invocation.getMethodName(), Constants.WEIGHT_KEY, Constants.DEFAULT_WEIGHT);
         if (weight > 0) {
             // 获取服务提供者启动时间戳

@@ -9,7 +9,7 @@ services:
       zookeeper-net:
         ipv4_address: 172.30.0.4
     restart: always
-  admin:
+  dubbo-admin:
     image: apache/dubbo-admin
     container_name: dubbo-admin
     depends_on:
@@ -19,7 +19,7 @@ services:
       - admin.config-center=zookeeper://dubbo-zookeeper:2181
       - admin.metadata-report.address=zookeeper://dubbo-zookeeper:2181
     ports:
-      - "8080:8080"
+      - "18080:8080"
     networks:
       zookeeper-net:
         ipv4_address: 172.30.0.5

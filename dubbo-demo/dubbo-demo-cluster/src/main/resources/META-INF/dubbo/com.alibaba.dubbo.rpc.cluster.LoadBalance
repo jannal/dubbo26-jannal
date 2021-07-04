@@ -1,0 +1,1 @@
+myLoadBalance=com.alibaba.dubbo.spi.MyLoadBalance

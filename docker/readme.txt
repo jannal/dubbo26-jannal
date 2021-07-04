@@ -7,8 +7,8 @@ $ brew cask install tuntap
 sudo -u $(ps aux |grep '[d]ocker.hyperkit' |cut -d' ' -f1) ./sbin/docker_tap_install.sh -f
 
 1. 添加路由
-//sudo route add 172.30.0.0/16 10.0.75.2
-sudo route add -net 172.30.0.0/16 -netmask 255.255.255.0 10.0.75.2
+//sudo route add 172.30.0.0/16 10.0.75.1
+sudo route add -net 172.30.0.0/16 -netmask 255.255.255.0 10.0.75.1
 2. 配置hosts
 172.30.0.4 dubbo-zookeeper
 172.30.0.5  dubboAdmin
