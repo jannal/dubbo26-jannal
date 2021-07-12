@@ -61,7 +61,7 @@ public class ExceptionFilter implements Filter {
     public Result invoke(Invoker<?> invoker, Invocation invocation) throws RpcException {
         try {
             Result result = invoker.invoke(invocation);
-            // 如果有异常或者是泛化调用
+            // 如果有异常或者是泛化调用,没有异常或者是泛化调用，则直接返回
             if (result.hasException() && GenericService.class != invoker.getInterface()) {
                 try {
                     Throwable exception = result.getException();

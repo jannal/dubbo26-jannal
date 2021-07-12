@@ -48,8 +48,10 @@ public class ContextFilter implements Filter {
             attachments.remove(Constants.DUBBO_VERSION_KEY);
             attachments.remove(Constants.TOKEN_KEY);
             attachments.remove(Constants.TIMEOUT_KEY);
+            //移除异步属性，避免异步属性传到过滤链的下一个节点
             attachments.remove(Constants.ASYNC_KEY);// Remove async property to avoid being passed to the following invoke chain.
         }
+        //设置当前请求的上下文Invoker、host、port
         RpcContext.getContext()
                 .setInvoker(invoker)
                 .setInvocation(invocation)
@@ -60,6 +62,7 @@ public class ContextFilter implements Filter {
         // mreged from dubbox
         // we may already added some attachments into RpcContext before this filter (e.g. in rest protocol)
         if (attachments != null) {
+            //合并前面已经在上线文中设置的附加信息
             if (RpcContext.getContext().getAttachments() != null) {
                 RpcContext.getContext().getAttachments().putAll(attachments);
             } else {
@@ -76,6 +79,7 @@ public class ContextFilter implements Filter {
             result.addAttachments(RpcContext.getServerContext().getAttachments());
             return result;
         } finally {
+            //清除上下文信息
             RpcContext.removeContext();
             RpcContext.getServerContext().clearAttachments();
         }

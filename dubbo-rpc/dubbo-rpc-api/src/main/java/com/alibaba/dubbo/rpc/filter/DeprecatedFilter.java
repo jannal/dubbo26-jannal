@@ -42,6 +42,7 @@ public class DeprecatedFilter implements Filter {
 
     @Override
     public Result invoke(Invoker<?> invoker, Invocation invocation) throws RpcException {
+        //为什么不是方法签名呢？ 方法名可能重复呀
         String key = invoker.getInterface().getName() + "." + invocation.getMethodName();
         if (!logged.contains(key)) {
             logged.add(key);

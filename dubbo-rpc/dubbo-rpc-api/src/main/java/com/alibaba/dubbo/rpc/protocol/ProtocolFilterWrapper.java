@@ -53,7 +53,7 @@ public class ProtocolFilterWrapper implements Protocol {
             for (int i = filters.size() - 1; i >= 0; i--) {
                 final Filter filter = filters.get(i);
                 final Invoker<T> next = last;
-                //装饰器增强原油的Invoker，组装过滤链
+                //装饰器增强原有的Invoker，组装过滤链
                 last = new Invoker<T>() {
 
                     @Override
@@ -104,6 +104,7 @@ public class ProtocolFilterWrapper implements Protocol {
         }
         return protocol.export(buildInvokerChain(invoker, Constants.SERVICE_FILTER_KEY, Constants.PROVIDER));
     }
+
     //引用服务
     @Override
     public <T> Invoker<T> refer(Class<T> type, URL url) throws RpcException {

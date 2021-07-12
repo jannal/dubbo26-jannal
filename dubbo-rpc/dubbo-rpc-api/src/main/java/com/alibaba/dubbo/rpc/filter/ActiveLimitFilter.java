@@ -53,6 +53,7 @@ public class ActiveLimitFilter implements Filter {
                         } catch (InterruptedException e) {
                         }
                         long elapsed = System.currentTimeMillis() - start;
+                        //先等到超时，再抛出异常（这点与服务端的不一样）
                         remain = timeout - elapsed;
                         if (remain <= 0) {
                             throw new RpcException("Waiting concurrent invoke timeout in client-side for service:  "
@@ -78,7 +79,7 @@ public class ActiveLimitFilter implements Filter {
             }
         } finally {
             if (max > 0) {
-                //唤醒
+                //唤醒另一个线程
                 synchronized (count) {
                     count.notify();
                 }

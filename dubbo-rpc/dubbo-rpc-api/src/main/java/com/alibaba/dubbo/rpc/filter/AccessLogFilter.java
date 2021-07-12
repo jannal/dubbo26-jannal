@@ -18,7 +18,6 @@ package com.alibaba.dubbo.rpc.filter;
 
 import com.alibaba.dubbo.common.Constants;
 import com.alibaba.dubbo.common.extension.Activate;
-import com.alibaba.fastjson.JSON;
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.alibaba.dubbo.common.utils.ConcurrentHashSet;
@@ -30,6 +29,7 @@ import com.alibaba.dubbo.rpc.Invoker;
 import com.alibaba.dubbo.rpc.Result;
 import com.alibaba.dubbo.rpc.RpcContext;
 import com.alibaba.dubbo.rpc.RpcException;
+import com.alibaba.fastjson.JSON;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -77,8 +77,9 @@ public class AccessLogFilter implements Filter {
 
     private static final long LOG_OUTPUT_INTERVAL = 5000;
 
-    private final ConcurrentMap<String, Set<String>> logQueue = new ConcurrentHashMap<String, Set<String>>();
+    private final ConcurrentMap<String/*日志文件名*/, Set<String>> logQueue = new ConcurrentHashMap<String, Set<String>>();
 
+    //定时把日志写入到文件，只有指定了输出log文件时才会用到
     private final ScheduledExecutorService logScheduled = Executors.newScheduledThreadPool(2, new NamedThreadFactory("Dubbo-Access-Log", true));
 
     private volatile ScheduledFuture<?> logFuture = null;
@@ -146,6 +147,7 @@ public class AccessLogFilter implements Filter {
                     sn.append(JSON.toJSONString(args));
                 }
                 String msg = sn.toString();
+                //如果accesslog是default或者true，则直接打印INFO级别日志，否则输出到文件中
                 if (ConfigUtils.isDefault(accesslog)) {
                     LoggerFactory.getLogger(ACCESS_LOG_KEY + "." + invoker.getInterface().getName()).info(msg);
                 } else {
