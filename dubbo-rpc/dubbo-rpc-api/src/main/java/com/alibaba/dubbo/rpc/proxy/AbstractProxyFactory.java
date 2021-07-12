@@ -41,18 +41,22 @@ public abstract class AbstractProxyFactory implements ProxyFactory {
         if (config != null && config.length() > 0) {
             String[] types = Constants.COMMA_SPLIT_PATTERN.split(config);
             if (types != null && types.length > 0) {
+                // 创建接口类型数组
                 interfaces = new Class<?>[types.length + 2];
+                // 第一个放invoker的服务接口
                 interfaces[0] = invoker.getInterface();
+                // 第二个位置放回声测试服务的接口类
                 interfaces[1] = EchoService.class;
                 for (int i = 0; i < types.length; i++) {
                     interfaces[i + 1] = ReflectUtils.forName(types[i]);
                 }
             }
         }
+        // 如果接口为空，就是config为空，则是回声测试
         if (interfaces == null) {
             interfaces = new Class<?>[]{invoker.getInterface(), EchoService.class};
         }
-
+        // 如果是泛化服务，那么在代理的接口集合中加入泛化服务类型
         if (!invoker.getInterface().equals(GenericService.class) && generic) {
             int len = interfaces.length;
             Class<?>[] temp = interfaces;

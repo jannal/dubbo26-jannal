@@ -51,7 +51,6 @@ import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * AbstractRegistry. (SPI, Prototype, ThreadSafe)
- *
  */
 public abstract class AbstractRegistry implements Registry {
 
@@ -76,6 +75,7 @@ public abstract class AbstractRegistry implements Registry {
     //订阅的监听器集合
     private final ConcurrentMap<URL, Set<NotifyListener>> subscribed = new ConcurrentHashMap<URL, Set<NotifyListener>>();
     // 某个消费者 被通知的 服务URL 集合
+    // 内层Map的可以是category类别，包含providers、consumers、routes、configurators
     private final ConcurrentMap<URL, Map<String, List<URL>>> notified = new ConcurrentHashMap<URL, Map<String, List<URL>>>();
     //注册中心URL
     private URL registryUrl;
@@ -336,6 +336,7 @@ public abstract class AbstractRegistry implements Registry {
 
     /**
      * 恢复，注册中心断开，重连成功的时候，会恢复注册和订阅
+     *
      * @throws Exception
      */
     protected void recover() throws Exception {

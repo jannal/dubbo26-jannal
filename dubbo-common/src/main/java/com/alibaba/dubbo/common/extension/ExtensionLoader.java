@@ -79,7 +79,7 @@ public class ExtensionLoader<T> {
     private final ExtensionFactory objectFactory;
 
     private final ConcurrentMap<Class<?>, String> cachedNames = new ConcurrentHashMap<Class<?>, String>();
-   //普通扩展类缓存，不包括自适应扩展类和Wrapper类
+    //普通扩展类缓存，不包括自适应扩展类和Wrapper类
     private final Holder<Map<String, Class<?>>> cachedClasses = new Holder<Map<String, Class<?>>>();
     //扩展名与Activate缓存
     private final Map<String, Activate> cachedActivates = new ConcurrentHashMap<String, Activate>();
@@ -516,6 +516,7 @@ public class ExtensionLoader<T> {
             }
             //检查是否依赖其他扩展类，如果依赖则注入
             injectExtension(instance);
+            //创建Wrapper实例，构造注入依赖的类
             Set<Class<?>> wrapperClasses = cachedWrapperClasses;
             if (wrapperClasses != null && !wrapperClasses.isEmpty()) {
                 for (Class<?> wrapperClass : wrapperClasses) {
@@ -548,7 +549,7 @@ public class ExtensionLoader<T> {
                         try {
                             //获取小写开头的名称，setUserInterface 变为userInterface
                             String property = method.getName().length() > 3 ? method.getName().substring(3, 4).toLowerCase() + method.getName().substring(4) : "";
-                            //参数类型如果与扩展点匹配，则调用setter方法注入
+                            //参数类型如果与扩展点匹配，则调用setter方法注入，此处的实现并没有循环依赖检查
                             Object object = objectFactory.getExtension(pt, property);
                             if (object != null) {
                                 //setter方法注入
@@ -698,6 +699,7 @@ public class ExtensionLoader<T> {
             Set<Class<?>> wrappers = cachedWrapperClasses;
             if (wrappers == null) {
                 //cachedWrapperClasses用来存放当前扩展点实现类中的包装类
+                //因为class的加载顺序是未知的，所以使用Set保存，即应当确保wrapper的实现与顺序无关
                 cachedWrapperClasses = new ConcurrentHashSet<Class<?>>();
                 wrappers = cachedWrapperClasses;
             }

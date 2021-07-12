@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>com.alibaba.dubbo.rpc.ProxyFactory</OriginalElement>
+  <nodes>
+    <node x="169.5" y="0.0">com.alibaba.dubbo.common.extension.SPI</node>
+    <node x="93.0" y="206.0">com.alibaba.dubbo.rpc.proxy.AbstractProxyFactory</node>
+    <node x="129.0" y="103.0">com.alibaba.dubbo.rpc.ProxyFactory</node>
+    <node x="204.0" y="309.0">com.alibaba.dubbo.rpc.proxy.javassist.JavassistProxyFactory</node>
+    <node x="0.0" y="309.0">com.alibaba.dubbo.rpc.proxy.jdk.JdkProxyFactory</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="com.alibaba.dubbo.rpc.proxy.jdk.JdkProxyFactory" target="com.alibaba.dubbo.rpc.proxy.AbstractProxyFactory">
+      <point x="0.0" y="-26.5" />
+      <point x="92.0" y="284.0" />
+      <point x="150.25" y="284.0" />
+      <point x="-57.25" y="26.5" />
+    </edge>
+    <edge source="com.alibaba.dubbo.rpc.proxy.AbstractProxyFactory" target="com.alibaba.dubbo.rpc.ProxyFactory">
+      <point x="0.0" y="-26.5" />
+      <point x="0.0" y="26.5" />
+    </edge>
+    <edge source="com.alibaba.dubbo.rpc.ProxyFactory" target="com.alibaba.dubbo.common.extension.SPI">
+      <point x="0.0" y="-26.5" />
+      <point x="0.0" y="26.5" />
+    </edge>
+    <edge source="com.alibaba.dubbo.rpc.proxy.javassist.JavassistProxyFactory" target="com.alibaba.dubbo.rpc.proxy.AbstractProxyFactory">
+      <point x="0.0" y="-26.5" />
+      <point x="323.0" y="284.0" />
+      <point x="264.75" y="284.0" />
+      <point x="57.25" y="26.5" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="1.0" x="-56.5" y="199.0" />
+  <SelectedNodes />
+  <Categories />
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

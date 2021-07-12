@@ -55,9 +55,9 @@ import java.util.Set;
 
 /**
  * RegistryDirectory
- *  1. 是一种动态目录服务，实现了NotifyListener，当注册中心服务配置发生变化后，
- *  RegistryDirectory 可收到与当前服务相关的变化
- *  2. 收到变更通知后，RegistryDirectory 可根据配置变更信息刷新 Invoker 列表
+ * 1. 是一种动态目录服务，实现了NotifyListener，当注册中心服务配置发生变化后，
+ * RegistryDirectory 可收到与当前服务相关的变化
+ * 2. 收到变更通知后，RegistryDirectory 可根据配置变更信息刷新 Invoker 列表
  */
 public class RegistryDirectory<T> extends AbstractDirectory<T> implements NotifyListener {
 
@@ -589,18 +589,20 @@ public class RegistryDirectory<T> extends AbstractDirectory<T> implements Notify
         if (forbidden) {
             // 1. No service provider 2. Service providers are disabled
             throw new RpcException(RpcException.FORBIDDEN_EXCEPTION,
-                "No provider available from registry " + getUrl().getAddress() + " for service " + getConsumerUrl().getServiceKey() + " on consumer " +  NetUtils.getLocalHost()
-                        + " use dubbo version " + Version.getVersion() + ", please check status of providers(disabled, not registered or in blacklist).");
+                    "No provider available from registry " + getUrl().getAddress() + " for service " + getConsumerUrl().getServiceKey() + " on consumer " + NetUtils.getLocalHost()
+                            + " use dubbo version " + Version.getVersion() + ", please check status of providers(disabled, not registered or in blacklist).");
         }
         List<Invoker<T>> invokers = null;
+        // 获取 Invoker 本地缓存。这里其实赋值本地变量是没有必要的
         Map<String, List<Invoker<T>>> localMethodInvokerMap = this.methodInvokerMap; // local reference
         if (localMethodInvokerMap != null && localMethodInvokerMap.size() > 0) {
-            //获取方法名和参数
+            //获取方法名和第一个参数
             String methodName = RpcUtils.getMethodName(invocation);
             Object[] args = RpcUtils.getArguments(invocation);
             // 检测参数列表的第一个参数是否为 String 或 enum 类型
             if (args != null && args.length > 0 && args[0] != null
                     && (args[0] instanceof String || args[0].getClass().isEnum())) {
+                // 通过 方法名 + 第一个参数名称 查询 Invoker 列表，具体的使用场景不太清楚
                 invokers = localMethodInvokerMap.get(methodName + "." + args[0]); // The routing can be enumerated according to the first parameter
             }
             if (invokers == null) {
