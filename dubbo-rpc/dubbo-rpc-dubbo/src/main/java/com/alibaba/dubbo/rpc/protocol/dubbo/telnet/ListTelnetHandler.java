@@ -40,8 +40,10 @@ public class ListTelnetHandler implements TelnetHandler {
         String service = null;
         boolean detail = false;
         if (message.length() > 0) {
+            //空白分割
             String[] parts = message.split("\\s+");
             for (String part : parts) {
+                // -l表示详细信息
                 if ("-l".equals(part)) {
                     detail = true;
                 } else {
@@ -58,6 +60,7 @@ public class ListTelnetHandler implements TelnetHandler {
             }
         }
         if (service == null || service.length() == 0) {
+            //获取所有已经暴露的服务
             for (Exporter<?> exporter : DubboProtocol.getDubboProtocol().getExporters()) {
                 if (buf.length() > 0) {
                     buf.append("\r\n");

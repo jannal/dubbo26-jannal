@@ -285,10 +285,12 @@ public class ZookeeperRegistry extends FailbackRegistry {
     private List<URL> toUrlsWithoutEmpty(URL consumer, List<String> providers) {
         List<URL> urls = new ArrayList<URL>();
         if (providers != null && !providers.isEmpty()) {
+            //遍历所有的provider列表
             for (String provider : providers) {
                 provider = URL.decode(provider);
                 if (provider.contains("://")) {
                     URL url = URL.valueOf(provider);
+                    //过滤
                     if (UrlUtils.isMatch(consumer, url)) {
                         urls.add(url);
                     }
