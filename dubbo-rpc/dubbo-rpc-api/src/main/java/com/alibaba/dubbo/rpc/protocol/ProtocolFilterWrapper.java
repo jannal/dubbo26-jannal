@@ -99,6 +99,7 @@ public class ProtocolFilterWrapper implements Protocol {
     //暴露服务
     @Override
     public <T> Exporter<T> export(Invoker<T> invoker) throws RpcException {
+        //registry 直接使用包装的protocol发布,并不会走Filter链
         if (Constants.REGISTRY_PROTOCOL.equals(invoker.getUrl().getProtocol())) {
             return protocol.export(invoker);
         }

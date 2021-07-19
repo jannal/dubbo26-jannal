@@ -82,11 +82,13 @@ public class ScriptRouter extends AbstractRouter {
         try {
             List<Invoker<T>> invokersCopy = new ArrayList<Invoker<T>>(invokers);
             Compilable compilable = (Compilable) engine;
+            //构造要传入脚本的参数
             Bindings bindings = engine.createBindings();
             bindings.put("invokers", invokersCopy);
             bindings.put("invocation", invocation);
             bindings.put("context", RpcContext.getContext());
             CompiledScript function = compilable.compile(rule);
+            //执行脚本
             Object obj = function.eval(bindings);
             if (obj instanceof Invoker[]) {
                 invokersCopy = Arrays.asList((Invoker<T>[]) obj);

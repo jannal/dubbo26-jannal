@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>com.alibaba.dubbo.rpc.cluster.RouterFactory</OriginalElement>
+  <nodes>
+    <node x="0.0" y="510.0">com.alibaba.dubbo.rpc.cluster.router.script.ScriptRouterFactory</node>
+    <node x="325.5" y="304.0">com.alibaba.dubbo.common.extension.SPI</node>
+    <node x="507.0" y="510.0">com.alibaba.dubbo.rpc.cluster.router.file.FileRouterFactory</node>
+    <node x="294.75" y="103.0">com.alibaba.dubbo.rpc.cluster.router.AbstractRouter</node>
+    <node x="240.0" y="510.0">com.alibaba.dubbo.rpc.cluster.router.condition.ConditionRouterFactory</node>
+    <node x="630.0" y="206.0">com.alibaba.dubbo.rpc.cluster.router.tag.TagRouter</node>
+    <node x="330.75" y="0.0">com.alibaba.dubbo.rpc.cluster.Router</node>
+    <node x="381.0" y="206.0">com.alibaba.dubbo.rpc.cluster.router.MockInvokersSelector</node>
+    <node x="280.5" y="407.0">com.alibaba.dubbo.rpc.cluster.RouterFactory</node>
+    <node x="177.0" y="206.0">com.alibaba.dubbo.rpc.cluster.router.condition.ConditionRouter</node>
+    <node x="0.0" y="206.0">com.alibaba.dubbo.rpc.cluster.router.script.ScriptRouter</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="com.alibaba.dubbo.rpc.cluster.router.condition.ConditionRouter" target="com.alibaba.dubbo.rpc.cluster.router.AbstractRouter">
+      <point x="0.0" y="-26.5" />
+      <point x="269.0" y="186.0" />
+      <point x="360.375" y="186.0" />
+      <point x="-21.875" y="26.5" />
+    </edge>
+    <edge source="com.alibaba.dubbo.rpc.cluster.router.script.ScriptRouter" target="com.alibaba.dubbo.rpc.cluster.router.AbstractRouter">
+      <point x="0.0" y="-26.5" />
+      <point x="78.5" y="176.0" />
+      <point x="316.625" y="176.0" />
+      <point x="-65.625" y="26.5" />
+    </edge>
+    <edge source="com.alibaba.dubbo.rpc.cluster.router.condition.ConditionRouterFactory" target="com.alibaba.dubbo.rpc.cluster.RouterFactory">
+      <point x="0.0" y="-26.5" />
+      <point x="0.0" y="26.5" />
+    </edge>
+    <edge source="com.alibaba.dubbo.rpc.cluster.router.script.ScriptRouterFactory" target="com.alibaba.dubbo.rpc.cluster.RouterFactory">
+      <point x="0.0" y="-26.5" />
+      <point x="110.0" y="485.0" />
+      <point x="308.1666666666667" y="485.0" />
+      <point x="-55.333333333333314" y="26.5" />
+    </edge>
+    <edge source="com.alibaba.dubbo.rpc.cluster.RouterFactory" target="com.alibaba.dubbo.common.extension.SPI">
+      <point x="0.0" y="-26.5" />
+      <point x="0.0" y="26.5" />
+    </edge>
+    <edge source="com.alibaba.dubbo.rpc.cluster.router.file.FileRouterFactory" target="com.alibaba.dubbo.rpc.cluster.RouterFactory">
+      <point x="0.0" y="-26.5" />
+      <point x="608.0" y="485.0" />
+      <point x="418.83333333333337" y="485.0" />
+      <point x="55.33333333333337" y="26.5" />
+    </edge>
+    <edge source="com.alibaba.dubbo.rpc.cluster.router.AbstractRouter" target="com.alibaba.dubbo.rpc.cluster.Router">
+      <point x="0.0" y="-26.5" />
+      <point x="0.0" y="26.5" />
+    </edge>
+    <edge source="com.alibaba.dubbo.rpc.cluster.router.MockInvokersSelector" target="com.alibaba.dubbo.rpc.cluster.router.AbstractRouter">
+      <point x="0.0" y="-26.5" />
+      <point x="495.5" y="186.0" />
+      <point x="404.125" y="186.0" />
+      <point x="21.875" y="26.5" />
+    </edge>
+    <edge source="com.alibaba.dubbo.rpc.cluster.router.tag.TagRouter" target="com.alibaba.dubbo.rpc.cluster.router.AbstractRouter">
+      <point x="0.0" y="-26.5" />
+      <point x="695.0" y="176.0" />
+      <point x="447.875" y="176.0" />
+      <point x="65.625" y="26.5" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="1.0" x="307.5" y="297.5" />
+  <SelectedNodes />
+  <Categories />
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+
