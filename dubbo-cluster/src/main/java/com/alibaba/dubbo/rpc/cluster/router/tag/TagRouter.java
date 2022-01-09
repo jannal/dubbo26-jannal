@@ -50,7 +50,7 @@ public class TagRouter extends AbstractRouter {
     public <T> List<Invoker<T>> route(List<Invoker<T>> invokers, URL url, Invocation invocation) throws RpcException {
         // filter
         List<Invoker<T>> result = new ArrayList<Invoker<T>>();
-        // Dynamic param
+        // Dynamic param 获取dubbo.tag
         String tag = RpcContext.getContext().getAttachment(Constants.TAG_KEY);
         // Tag request
         if (!StringUtils.isEmpty(tag)) {
@@ -64,6 +64,7 @@ public class TagRouter extends AbstractRouter {
         // If Constants.REQUEST_TAG_KEY unspecified or no invoker be selected, downgrade to normal invokers
         if (result.isEmpty()) {
             // Only forceTag = true force match, otherwise downgrade
+            //如果dubbo.force.tag=true则不降级，否则降级为默认provider
             String forceTag = RpcContext.getContext().getAttachment(Constants.FORCE_USE_TAG);
             if (StringUtils.isEmpty(forceTag) || "false".equals(forceTag)) {
                 for (Invoker<T> invoker : invokers) {

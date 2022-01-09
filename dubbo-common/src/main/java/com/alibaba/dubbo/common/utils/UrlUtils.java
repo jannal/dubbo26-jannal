@@ -382,35 +382,44 @@ public class UrlUtils {
 
     public static boolean isMatchGlobPattern(String pattern, String value, URL param) {
         if (param != null && pattern.startsWith("$")) {
+            // 引用服务消费者URL
             pattern = param.getRawParameter(pattern.substring(1));
         }
         return isMatchGlobPattern(pattern, value);
     }
 
     public static boolean isMatchGlobPattern(String pattern, String value) {
+        // 匹配规则为通配符 *，直接返回 true
         if ("*".equals(pattern))
             return true;
         if ((pattern == null || pattern.length() == 0)
                 && (value == null || value.length() == 0))
+            // pattern 和 value 均为空，此时可认为两者相等，返回 true
             return true;
         if ((pattern == null || pattern.length() == 0)
                 || (value == null || value.length() == 0))
+            // pattern 和 value 其中有一个为空，表明两者不相等，返回 false
             return false;
 
+        // 定位 * 通配符位置
         int i = pattern.lastIndexOf('*');
         // doesn't find "*"
         if (i == -1) {
+            // 匹配规则中不包含通配符，此时直接比较是否相等，并返回比较结果
             return value.equals(pattern);
         }
         // "*" is at the end
+        // 通配符 "*" 在匹配规则尾部，比如 10.0.21.*
         else if (i == pattern.length() - 1) {
             return value.startsWith(pattern.substring(0, i));
         }
         // "*" is at the beginning
+        // 通配符 "*" 在匹配规则头部
         else if (i == 0) {
             return value.endsWith(pattern.substring(i + 1));
         }
         // "*" is in the middle
+        // 通配符 "*" 在匹配规则中间位置
         else {
             String prefix = pattern.substring(0, i);
             String suffix = pattern.substring(i + 1);
