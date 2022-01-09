@@ -212,7 +212,7 @@ public class ReferenceConfig<T> extends AbstractReferenceConfig {
             }
             checkInterfaceAndMethods(interfaceClass, methods);
         }
-        // 从系统变量中获取与接口名对应的属性值
+        // 从系统变量中获取与接口名对应的属性值,用于直连，配置类似java -Dcom.alibaba.xxx.XxxService=dubbo://localhost:20890
         String resolve = System.getProperty(interfaceName);
         String resolveFile = null;
         if (resolve == null || resolve.length() == 0) {
@@ -231,7 +231,7 @@ public class ReferenceConfig<T> extends AbstractReferenceConfig {
                 FileInputStream fis = null;
                 try {
                     fis = new FileInputStream(new File(resolveFile));
-                    // 从文件中加载配置
+                    // 从文件中加载配置（用于直连），映射文件的格式类似com.alibaba.xxx.XxxService=dubbo://localhost:20890
                     properties.load(fis);
                 } catch (IOException e) {
                     throw new IllegalStateException("Unload " + resolveFile + ", cause: " + e.getMessage(), e);
@@ -247,6 +247,7 @@ public class ReferenceConfig<T> extends AbstractReferenceConfig {
             }
         }
         if (resolve != null && resolve.length() > 0) {
+            //赋值给直连的URL地址，类似dubbo://172.16.117.33:20882/
             url = resolve;
             if (logger.isWarnEnabled()) {
                 if (resolveFile != null) {
@@ -331,7 +332,7 @@ public class ReferenceConfig<T> extends AbstractReferenceConfig {
                 checkAndConvertImplicitConfig(method, map, attributes);
             }
         }
-
+        // 以系统环境变量（DUBBO_IP_TO_REGISTRY）的值作为服务消费者ip地址,没有设置再取主机地址
         String hostToRegistry = ConfigUtils.getSystemProperty(Constants.DUBBO_IP_TO_REGISTRY);
         if (hostToRegistry == null || hostToRegistry.length() == 0) {
             hostToRegistry = NetUtils.getLocalHost();
@@ -354,7 +355,7 @@ public class ReferenceConfig<T> extends AbstractReferenceConfig {
         URL tmpUrl = new URL("temp", "localhost", 0, map);
         final boolean isJvmRefer;
         if (isInjvm() == null) {
-            // url 配置被指定，则不做本地引用
+            // url 配置被指定（直连模式），则不做本地引用
             if (url != null && url.length() > 0) { // if a url is specified, don't do local reference
                 isJvmRefer = false;
                 // 根据 url 的协议、scope 以及 injvm 等参数检测是否需要本地引用
@@ -380,6 +381,7 @@ public class ReferenceConfig<T> extends AbstractReferenceConfig {
         } else {
             // 远程引用，url 不为空，表明想进行点对点调用
             if (url != null && url.length() > 0) { // user specified URL, could be peer-to-peer address, or register center's address.
+                //使用分号分割多个
                 String[] us = Constants.SEMICOLON_SPLIT_PATTERN.split(url);
                 // 当需要配置多个 url 时，可用分号进行分割，这里会进行切分
                 if (us != null && us.length > 0) {
@@ -390,6 +392,7 @@ public class ReferenceConfig<T> extends AbstractReferenceConfig {
                             url = url.setPath(interfaceName);
                         }
                         // 检测 url 协议是否为 registry，若是，表明用户想使用指定的注册中心
+                        // xml中的url配置类似如下格式registry://dubbo-zookeeper:2181/cn.jannal.dubbo.facade.DemoService/?registry=zookeeper
                         if (Constants.REGISTRY_PROTOCOL.equals(url.getProtocol())) {
                             // 将 map 转换为查询字符串，并作为 refer 参数的值添加到 url 中
                             urls.add(url.addParameterAndEncoded(Constants.REFER_KEY, StringUtils.toQueryString(map)));
@@ -459,6 +462,7 @@ public class ReferenceConfig<T> extends AbstractReferenceConfig {
         if (c && !invoker.isAvailable()) {
             // make it possible for consumer to retry later if provider is temporarily unavailable
             initialized = false;
+            //可能会OOM，2.6.11已经修复https://github.com/apache/dubbo/issues/8515
             throw new IllegalStateException("Failed to check the status of the service " + interfaceName + ". No provider available for the service " + (group == null ? "" : group + "/") + interfaceName + (version == null ? "" : ":" + version) + " from the url " + invoker.getUrl() + " to the consumer " + NetUtils.getLocalHost() + " use dubbo version " + Version.getVersion());
         }
         if (logger.isInfoEnabled()) {

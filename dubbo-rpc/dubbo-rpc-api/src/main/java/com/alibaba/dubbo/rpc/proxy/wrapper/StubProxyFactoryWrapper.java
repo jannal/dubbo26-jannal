@@ -63,11 +63,15 @@ public class StubProxyFactoryWrapper implements ProxyFactory {
     @SuppressWarnings({"unchecked", "rawtypes"})
     public <T> T getProxy(Invoker<T> invoker) throws RpcException {
         T proxy = proxyFactory.getProxy(invoker);
+        //非泛化调用
         if (GenericService.class != invoker.getInterface()) {
+            //local已经废弃，这里是为了兼容
             String stub = invoker.getUrl().getParameter(Constants.STUB_KEY, invoker.getUrl().getParameter(Constants.LOCAL_KEY));
             if (ConfigUtils.isNotEmpty(stub)) {
                 Class<?> serviceType = invoker.getInterface();
+                //如果配置stub=true,而非直接配置Stub实现类名
                 if (ConfigUtils.isDefault(stub)) {
+                    //XXXServiceStub或者XXXServiceLocal
                     if (invoker.getUrl().hasParameter(Constants.STUB_KEY)) {
                         stub = serviceType.getName() + "Stub";
                     } else {
@@ -76,15 +80,19 @@ public class StubProxyFactoryWrapper implements ProxyFactory {
                 }
                 try {
                     Class<?> stubClass = ReflectUtils.forName(stub);
+                    //校验是否实现业务接口
                     if (!serviceType.isAssignableFrom(stubClass)) {
                         throw new IllegalStateException("The stub implementation class " + stubClass.getName() + " not implement interface " + serviceType.getName());
                     }
                     try {
+                        //将代理对象传入Stub类的构造函数
                         Constructor<?> constructor = ReflectUtils.findConstructor(stubClass, serviceType);
+                        //替换proxy成为新的proxy
                         proxy = (T) constructor.newInstance(new Object[]{proxy});
                         //export stub service
                         URL url = invoker.getUrl();
                         if (url.getParameter(Constants.STUB_EVENT_KEY, Constants.DEFAULT_STUB_EVENT)) {
+                            //url中增加一些参数
                             url = url.addParameter(Constants.STUB_EVENT_METHODS_KEY, StringUtils.join(Wrapper.getWrapper(proxy.getClass()).getDeclaredMethodNames(), ","));
                             url = url.addParameter(Constants.IS_SERVER_KEY, Boolean.FALSE.toString());
                             try {

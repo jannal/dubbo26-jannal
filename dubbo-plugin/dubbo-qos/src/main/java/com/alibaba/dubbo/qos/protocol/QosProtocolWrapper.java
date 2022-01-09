@@ -79,6 +79,7 @@ public class QosProtocolWrapper implements Protocol {
 
     private void startQosServer(URL url) {
         try {
+            //默认开启
             boolean qosEnable = url.getParameter(QOS_ENABLE,true);
             if (!qosEnable) {
                 logger.info("qos won't be started because it is disabled. " +
@@ -86,7 +87,7 @@ public class QosProtocolWrapper implements Protocol {
                         "dubbo.properties or XML/spring boot configuration.");
                 return;
             }
-
+            //判断是否已经启动
             if (!hasStarted.compareAndSet(false, true)) {
                 return;
             }

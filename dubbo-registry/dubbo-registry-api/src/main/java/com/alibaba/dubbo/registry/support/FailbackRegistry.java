@@ -72,6 +72,8 @@ public abstract class FailbackRegistry extends AbstractRegistry {
             public void run() {
                 // Check and connect to the registry
                 try {
+                    //处理failedRegistered（注册失败）和failedUnregistered（移除注册失败）中的数据
+                    //定时检测并重新注册
                     retry();
                 } catch (Throwable t) { // Defensive fault tolerance
                     logger.error("Unexpected error occur at failed retry, cause: " + t.getMessage(), t);
@@ -141,7 +143,7 @@ public abstract class FailbackRegistry extends AbstractRegistry {
             Throwable t = e;
 
             // If the startup detection is opened, the Exception is thrown directly.
-            //如果开启了自动检测，则直接抛出异常
+            //如果开启了自动检测（check=true），则直接抛出异常
             boolean check = getUrl().getParameter(Constants.CHECK_KEY, true)
                     && url.getParameter(Constants.CHECK_KEY, true)
                     && !Constants.CONSUMER_PROTOCOL.equals(url.getProtocol());
@@ -196,18 +198,22 @@ public abstract class FailbackRegistry extends AbstractRegistry {
         removeFailedSubscribed(url, listener);
         try {
             // Sending a subscription request to the server side
+            //
             doSubscribe(url, listener);
         } catch (Exception e) {
             Throwable t = e;
 
+            //如果抛出异常，则从缓存properties中获取
             List<URL> urls = getCacheUrls(url);
             if (urls != null && !urls.isEmpty()) {
                 notify(url, listener, urls);
                 logger.error("Failed to subscribe " + url + ", Using cached list: " + urls + " from cache file: " + getUrl().getParameter(Constants.FILE_KEY, System.getProperty("user.home") + "/dubbo-registry-" + url.getHost() + ".cache") + ", cause: " + t.getMessage(), t);
             } else {
                 // If the startup detection is opened, the Exception is thrown directly.
+                //如果缓存中没有此URL，检查check是否为true，如果为true，则抛出异常
                 boolean check = getUrl().getParameter(Constants.CHECK_KEY, true)
                         && url.getParameter(Constants.CHECK_KEY, true);
+                //子类实现doSubscribe方法，可在此方法中抛出此异常来跳过failback
                 boolean skipFailback = t instanceof SkipFailbackWrapperException;
                 if (check || skipFailback) {
                     if (skipFailback) {
@@ -220,6 +226,7 @@ public abstract class FailbackRegistry extends AbstractRegistry {
             }
 
             // Record a failed registration request to a failed list, retry regularly
+            // 将失败的记录到失败列表，定时重试
             addFailedSubscribed(url, listener);
         }
     }
@@ -311,6 +318,13 @@ public abstract class FailbackRegistry extends AbstractRegistry {
     }
 
     // Retry the failed actions
+    /**
+     * 将所有注册失败的url（failedRegistered中的url）进行注册，之后从failedRegistered进行移除；
+     * 将所有反注册失败的url（failedUnregistered中的url）进行反注册，之后从failedUnregistered进行移除；
+     * 将所有订阅失败的url（failedSubscribed中的url）进行重新订阅，之后从failedSubscribed进行移除；
+     * 将所有反订阅失败的url（failedUnsubscribed中的url）进行反订阅，之后从failedUnsubscribed进行移除；
+     * 将所有通知失败的url（failedNotified中的url）进行通知，之后从failedNotified进行移除；
+     */
     protected void retry() {
         if (!failedRegistered.isEmpty()) {
             Set<URL> failed = new HashSet<URL>(failedRegistered);

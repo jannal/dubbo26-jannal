@@ -68,7 +68,9 @@ public class RegistryDirectory<T> extends AbstractDirectory<T> implements Notify
     private static final RouterFactory routerFactory = ExtensionLoader.getExtensionLoader(RouterFactory.class).getAdaptiveExtension();
 
     private static final ConfiguratorFactory configuratorFactory = ExtensionLoader.getExtensionLoader(ConfiguratorFactory.class).getAdaptiveExtension();
+    //服务Key
     private final String serviceKey; // Initialization at construction time, assertion not null
+    //服务接口
     private final Class<T> serviceType; // Initialization at construction time, assertion not null
     private final Map<String, String> queryMap; // Initialization at construction time, assertion not null
     private final URL directoryUrl; // Initialization at construction time, assertion not null, and always assign non null value
@@ -133,6 +135,7 @@ public class RegistryDirectory<T> extends AbstractDirectory<T> implements Notify
 
         List<Configurator> configurators = new ArrayList<Configurator>(urls.size());
         for (URL url : urls) {
+            //如果是empty，则清空
             if (Constants.EMPTY_PROTOCOL.equals(url.getProtocol())) {
                 configurators.clear();
                 break;
@@ -159,7 +162,9 @@ public class RegistryDirectory<T> extends AbstractDirectory<T> implements Notify
     }
 
     public void subscribe(URL url) {
+        //设置consumer url
         setConsumerUrl(url);
+        //调用注册中心订阅消息消息消费者URL,listener就是自己
         registry.subscribe(url, this);
     }
 
@@ -199,15 +204,22 @@ public class RegistryDirectory<T> extends AbstractDirectory<T> implements Notify
         List<URL> invokerUrls = new ArrayList<URL>();
         List<URL> routerUrls = new ArrayList<URL>();
         List<URL> configuratorUrls = new ArrayList<URL>();
+        //根据通知的URL的前缀，分别添加到：
+        // invokerUrls(提供者url)、routerUrls（路由信息）、configuratorUrls （配置url）。
         for (URL url : urls) {
+            //获取URL协议字段，例如condition://、route://、script://、override://等
             String protocol = url.getProtocol();
+            //获取url的category,providers、configurators、routers
             String category = url.getParameter(Constants.CATEGORY_KEY, Constants.DEFAULT_CATEGORY);
+            //routers或者route
             if (Constants.ROUTERS_CATEGORY.equals(category)
                     || Constants.ROUTE_PROTOCOL.equals(protocol)) {
                 routerUrls.add(url);
+             //configurators和override
             } else if (Constants.CONFIGURATORS_CATEGORY.equals(category)
                     || Constants.OVERRIDE_PROTOCOL.equals(protocol)) {
                 configuratorUrls.add(url);
+                //providers
             } else if (Constants.PROVIDERS_CATEGORY.equals(category)) {
                 invokerUrls.add(url);
             } else {
@@ -247,34 +259,44 @@ public class RegistryDirectory<T> extends AbstractDirectory<T> implements Notify
      */
     // TODO: 2017/8/31 FIXME The thread pool should be used to refresh the address, otherwise the task may be accumulated.
     private void refreshInvoker(List<URL> invokerUrls) {
+        // invokerUrls 仅有一个元素，且 url 协议头为 empty，此时表示禁用所有服务
         if (invokerUrls != null && invokerUrls.size() == 1 && invokerUrls.get(0) != null
                 && Constants.EMPTY_PROTOCOL.equals(invokerUrls.get(0).getProtocol())) {
             this.forbidden = true; // Forbid to access
             this.methodInvokerMap = null; // Set the method invoker map to null
+            // 销毁所有 Invoker
             destroyAllInvokers(); // Close all invokers
         } else {
             this.forbidden = false; // Allow to access
             Map<String, Invoker<T>> oldUrlInvokerMap = this.urlInvokerMap; // local reference
             if (invokerUrls.isEmpty() && this.cachedInvokerUrls != null) {
+                // 添加缓存 url 到 invokerUrls 中
                 invokerUrls.addAll(this.cachedInvokerUrls);
             } else {
                 this.cachedInvokerUrls = new HashSet<URL>();
+                // 缓存 invokerUrls
                 this.cachedInvokerUrls.addAll(invokerUrls);//Cached invoker urls, convenient for comparison
             }
             if (invokerUrls.isEmpty()) {
                 return;
             }
+            // 将 url 转成 Invoker
             Map<String, Invoker<T>> newUrlInvokerMap = toInvokers(invokerUrls);// Translate url list to Invoker map
+            //toInvokers 方法返回的是 映射关系表.还要对这个结果进行进一步处理，得到方法名到 Invoker 列表的映射关系。
+            // 将 newUrlInvokerMap 转成方法名到 Invoker 列表的映射
             Map<String, List<Invoker<T>>> newMethodInvokerMap = toMethodInvokers(newUrlInvokerMap); // Change method name to map Invoker Map
             // state change
             // If the calculation is wrong, it is not processed.
+            // 转换出错，直接打印异常，并返回
             if (newUrlInvokerMap == null || newUrlInvokerMap.size() == 0) {
                 logger.error(new IllegalStateException("urls to invokers error .invokerUrls.size :" + invokerUrls.size() + ", invoker.size :0. urls :" + invokerUrls.toString()));
                 return;
             }
+            // 合并多个组的 Invoker
             this.methodInvokerMap = multiGroup ? toMergeMethodInvokerMap(newMethodInvokerMap) : newMethodInvokerMap;
             this.urlInvokerMap = newUrlInvokerMap;
             try {
+                // 销毁无用 Invoker
                 destroyUnusedInvokers(oldUrlInvokerMap, newUrlInvokerMap); // Close the unused Invoker
             } catch (Exception e) {
                 logger.warn("destroyUnusedInvokers error. ", e);
@@ -287,23 +309,34 @@ public class RegistryDirectory<T> extends AbstractDirectory<T> implements Notify
         for (Map.Entry<String, List<Invoker<T>>> entry : methodMap.entrySet()) {
             String method = entry.getKey();
             List<Invoker<T>> invokers = entry.getValue();
+            // group -> List<Invoker<T>>
             Map<String, List<Invoker<T>>> groupMap = new HashMap<String, List<Invoker<T>>>();
             for (Invoker<T> invoker : invokers) {
+                // 获取分组配置
                 String group = invoker.getUrl().getParameter(Constants.GROUP_KEY, "");
                 List<Invoker<T>> groupInvokers = groupMap.get(group);
                 if (groupInvokers == null) {
                     groupInvokers = new ArrayList<Invoker<T>>();
+                    // 缓存 <group, List<Invoker>> 到 groupMap 中
                     groupMap.put(group, groupInvokers);
                 }
                 groupInvokers.add(invoker);
             }
             if (groupMap.size() == 1) {
+                // 如果 groupMap 中仅包含一组键值对，此时直接取出该键值对的值
                 result.put(method, groupMap.values().iterator().next());
             } else if (groupMap.size() > 1) {
+                // groupMap.size() > 1 成立，表示 groupMap 中包含多组键值对，比如：
+                // {
+                //     "dubbo": [invoker1, invoker2, invoker3, ...],
+                //     "hello": [invoker4, invoker5, invoker6, ...]
+                // }
                 List<Invoker<T>> groupInvokers = new ArrayList<Invoker<T>>();
                 for (List<Invoker<T>> groupList : groupMap.values()) {
+                    // 通过集群类合并每个分组对应的 Invoker 列表
                     groupInvokers.add(cluster.join(new StaticDirectory<T>(groupList)));
                 }
+                // 缓存结果
                 result.put(method, groupInvokers);
             } else {
                 result.put(method, invokers);
@@ -355,30 +388,36 @@ public class RegistryDirectory<T> extends AbstractDirectory<T> implements Notify
             return newUrlInvokerMap;
         }
         Set<String> keys = new HashSet<String>();
+        // 获取消费端配置的协议
         String queryProtocols = this.queryMap.get(Constants.PROTOCOL_KEY);
         for (URL providerUrl : urls) {
             // If protocol is configured at the reference side, only the matching protocol is selected
             if (queryProtocols != null && queryProtocols.length() > 0) {
                 boolean accept = false;
                 String[] acceptProtocols = queryProtocols.split(",");
+                // 检测服务提供者协议是否被服务消费者所支持
                 for (String acceptProtocol : acceptProtocols) {
                     if (providerUrl.getProtocol().equals(acceptProtocol)) {
                         accept = true;
                         break;
                     }
                 }
+                // 若服务消费者协议头不被消费者所支持，则忽略当前 providerUrl
                 if (!accept) {
                     continue;
                 }
             }
+            // 忽略 empty 协议
             if (Constants.EMPTY_PROTOCOL.equals(providerUrl.getProtocol())) {
                 continue;
             }
+            // 通过 SPI 检测服务端协议是否被消费端支持，不支持则抛出异常
             if (!ExtensionLoader.getExtensionLoader(Protocol.class).hasExtension(providerUrl.getProtocol())) {
                 logger.error(new IllegalStateException("Unsupported protocol " + providerUrl.getProtocol() + " in notified url: " + providerUrl + " from registry " + getUrl().getAddress() + " to consumer " + NetUtils.getLocalHost()
                         + ", supported protocol: " + ExtensionLoader.getExtensionLoader(Protocol.class).getSupportedExtensions()));
                 continue;
             }
+            // 合并 url
             URL url = mergeUrl(providerUrl);
 
             String key = url.toFullString(); // The parameter urls are sorted
@@ -387,26 +426,34 @@ public class RegistryDirectory<T> extends AbstractDirectory<T> implements Notify
             }
             keys.add(key);
             // Cache key is url that does not merge with consumer side parameters, regardless of how the consumer combines parameters, if the server url changes, then refer again
+            // 将本地 Invoker 缓存赋值给 localUrlInvokerMap
             Map<String, Invoker<T>> localUrlInvokerMap = this.urlInvokerMap; // local reference
+            // 获取与 url 对应的 Invoker
             Invoker<T> invoker = localUrlInvokerMap == null ? null : localUrlInvokerMap.get(key);
+            // 缓存未命中
             if (invoker == null) { // Not in the cache, refer again
                 try {
                     boolean enabled = true;
                     if (url.hasParameter(Constants.DISABLED_KEY)) {
+                        // 获取 disable 配置，取反，然后赋值给 enable 变量
                         enabled = !url.getParameter(Constants.DISABLED_KEY, false);
                     } else {
+                        // 获取 enable 配置，并赋值给 enable 变量
                         enabled = url.getParameter(Constants.ENABLED_KEY, true);
                     }
                     if (enabled) {
+                        // 调用 refer 获取 Invoker
                         invoker = new InvokerDelegate<T>(protocol.refer(serviceType, url), url, providerUrl);
                     }
                 } catch (Throwable t) {
                     logger.error("Failed to refer invoker for interface:" + serviceType + ",url:(" + url + ")" + t.getMessage(), t);
                 }
                 if (invoker != null) { // Put new invoker in cache
+                    // 缓存 Invoker 实例
                     newUrlInvokerMap.put(key, invoker);
                 }
             } else {
+                //  缓存命中.将 invoker 存储到 newUrlInvokerMap 中
                 newUrlInvokerMap.put(key, invoker);
             }
         }
@@ -475,23 +522,29 @@ public class RegistryDirectory<T> extends AbstractDirectory<T> implements Notify
      * @return Mapping relation between Invoker and method
      */
     private Map<String, List<Invoker<T>>> toMethodInvokers(Map<String, Invoker<T>> invokersMap) {
+        // 方法名 -> Invoker 列表
         Map<String, List<Invoker<T>>> newMethodInvokerMap = new HashMap<String, List<Invoker<T>>>();
         // According to the methods classification declared by the provider URL, the methods is compatible with the registry to execute the filtered methods
         List<Invoker<T>> invokersList = new ArrayList<Invoker<T>>();
         if (invokersMap != null && invokersMap.size() > 0) {
             for (Invoker<T> invoker : invokersMap.values()) {
+                // 获取 methods 参数
                 String parameter = invoker.getUrl().getParameter(Constants.METHODS_KEY);
                 if (parameter != null && parameter.length() > 0) {
+                    // 切分 methods 参数值，得到方法名数组
                     String[] methods = Constants.COMMA_SPLIT_PATTERN.split(parameter);
                     if (methods != null && methods.length > 0) {
                         for (String method : methods) {
+                            // 方法名不为 *
                             if (method != null && method.length() > 0
                                     && !Constants.ANY_VALUE.equals(method)) {
+                                // 根据方法名获取 Invoker 列表
                                 List<Invoker<T>> methodInvokers = newMethodInvokerMap.get(method);
                                 if (methodInvokers == null) {
                                     methodInvokers = new ArrayList<Invoker<T>>();
                                     newMethodInvokerMap.put(method, methodInvokers);
                                 }
+                                // 存储 Invoker 到列表中
                                 methodInvokers.add(invoker);
                             }
                         }
@@ -500,7 +553,9 @@ public class RegistryDirectory<T> extends AbstractDirectory<T> implements Notify
                 invokersList.add(invoker);
             }
         }
+        // 进行服务级别路由 https://github.com/apache/dubbo/pull/749
         List<Invoker<T>> newInvokersList = route(invokersList, null);
+        // 存储 <*, newInvokersList> 映射关系
         newMethodInvokerMap.put(Constants.ANY_VALUE, newInvokersList);
         if (serviceMethods != null && serviceMethods.length > 0) {
             for (String method : serviceMethods) {
@@ -508,10 +563,11 @@ public class RegistryDirectory<T> extends AbstractDirectory<T> implements Notify
                 if (methodInvokers == null || methodInvokers.isEmpty()) {
                     methodInvokers = newInvokersList;
                 }
+                // 进行方法级别路由
                 newMethodInvokerMap.put(method, route(methodInvokers, method));
             }
         }
-        // sort and unmodifiable
+        // sort and unmodifiable  // 排序，转成不可变列表
         for (String method : new HashSet<String>(newMethodInvokerMap.keySet())) {
             List<Invoker<T>> methodInvokers = newMethodInvokerMap.get(method);
             Collections.sort(methodInvokers, InvokerComparator.getComparator());

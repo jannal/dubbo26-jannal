@@ -423,6 +423,7 @@ public class ServiceConfig<T> extends AbstractServiceConfig {
                     for (ArgumentConfig argument : arguments) {
                         // convert argument type
                         if (argument.getType() != null && argument.getType().length() > 0) {
+                            // 以 <dubbo:argument type="com.demo.CallbackListener" callback="true" /> 方式配置
                             Method[] methods = interfaceClass.getMethods();
                             // visit all methods
                             if (methods != null && methods.length > 0) {
@@ -454,6 +455,7 @@ public class ServiceConfig<T> extends AbstractServiceConfig {
                                 }
                             }
                         } else if (argument.getIndex() != -1) {
+                            // 以  <dubbo:argument index="1" callback="true" /> 配置
                             appendParameters(map, argument, method.getName() + "." + argument.getIndex());
                         } else {
                             throw new IllegalArgumentException("argument config must set index or type attribute.eg: <dubbo:argument index='0' .../> or <dubbo:argument type=xxx .../>");
@@ -482,12 +484,14 @@ public class ServiceConfig<T> extends AbstractServiceConfig {
             }
         }
         if (!ConfigUtils.isEmpty(token)) {
+            //设置token，token=true或token=default 使用UUID
             if (ConfigUtils.isDefault(token)) {
                 map.put(Constants.TOKEN_KEY, UUID.randomUUID().toString());
             } else {
                 map.put(Constants.TOKEN_KEY, token);
             }
         }
+        //injvm协议，无需注册（register=false）和notify
         if (Constants.LOCAL_PROTOCOL.equals(protocolConfig.getName())) {
             protocolConfig.setRegister(false);
             map.put("notify", "false");
@@ -541,6 +545,7 @@ public class ServiceConfig<T> extends AbstractServiceConfig {
                         }
 
                         // For providers, this is used to enable custom proxy to generate invoker
+                        // 自定义动态代理
                         String proxy = url.getParameter(Constants.PROXY_KEY);
                         if (StringUtils.isNotEmpty(proxy)) {
                             registryURL = registryURL.addParameter(Constants.PROXY_KEY, proxy);

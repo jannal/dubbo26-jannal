@@ -55,6 +55,7 @@ public class QosProcessHandler extends ByteToMessageDecoder {
             @Override
             public void run() {
                 if (welcome != null) {
+                    //一旦连接，输出Logo
                     ctx.write(Unpooled.wrappedBuffer(welcome.getBytes()));
                     ctx.writeAndFlush(Unpooled.wrappedBuffer(prompt.getBytes()));
                 }
@@ -74,6 +75,7 @@ public class QosProcessHandler extends ByteToMessageDecoder {
 
         ChannelPipeline p = ctx.pipeline();
         p.addLast(new LocalHostPermitHandler(acceptForeignIp));
+        //HTTP访问
         if (isHttp(magic)) {
             // no welcome output for http protocol
             if (welcomeFuture != null && welcomeFuture.isCancellable()) {

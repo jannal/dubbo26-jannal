@@ -303,11 +303,13 @@ public abstract class AbstractInterfaceConfig extends AbstractMethodConfig {
         if (ConfigUtils.isEmpty(mock)) {
             return;
         }
-
+        //标准化mock配置字符串
         String normalizedMock = MockInvoker.normalizeMock(mock);
+        //如果是以return开头
         if (normalizedMock.startsWith(Constants.RETURN_PREFIX)) {
             normalizedMock = normalizedMock.substring(Constants.RETURN_PREFIX.length()).trim();
             try {
+                //解析return 字符串
                 MockInvoker.parseMockValue(normalizedMock);
             } catch (Exception e) {
                 throw new IllegalStateException("Illegal mock return in <dubbo:service/reference ... " +
@@ -317,6 +319,7 @@ public abstract class AbstractInterfaceConfig extends AbstractMethodConfig {
             normalizedMock = normalizedMock.substring(Constants.THROW_PREFIX.length()).trim();
             if (ConfigUtils.isNotEmpty(normalizedMock)) {
                 try {
+                    //解析throw 字符串
                     MockInvoker.getThrowable(normalizedMock);
                 } catch (Exception e) {
                     throw new IllegalStateException("Illegal mock throw in <dubbo:service/reference ... " +
@@ -329,17 +332,21 @@ public abstract class AbstractInterfaceConfig extends AbstractMethodConfig {
     }
 
     void checkStub(Class<?> interfaceClass) {
+        //如果存在local=xxx配置，如果是local=true，则比如按照【接口名称+Local】的命名方式。如果是直接指定类名，则没有要求
         if (ConfigUtils.isNotEmpty(local)) {
             Class<?> localClass = ConfigUtils.isDefault(local) ? ReflectUtils.forName(interfaceClass.getName() + "Local") : ReflectUtils.forName(local);
+            //local实现类必须实现业务接口
             if (!interfaceClass.isAssignableFrom(localClass)) {
                 throw new IllegalStateException("The local implementation class " + localClass.getName() + " not implement interface " + interfaceClass.getName());
             }
+            //local实现类必须有一个接口构造函数
             try {
                 ReflectUtils.findConstructor(localClass, interfaceClass);
             } catch (NoSuchMethodException e) {
                 throw new IllegalStateException("No such constructor \"public " + localClass.getSimpleName() + "(" + interfaceClass.getName() + ")\" in local implementation class " + localClass.getName());
             }
         }
+        //与上面local逻辑一样
         if (ConfigUtils.isNotEmpty(stub)) {
             Class<?> localClass = ConfigUtils.isDefault(stub) ? ReflectUtils.forName(interfaceClass.getName() + "Stub") : ReflectUtils.forName(stub);
             if (!interfaceClass.isAssignableFrom(localClass)) {

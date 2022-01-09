@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>com.alibaba.dubbo.config.AbstractConfig</OriginalElement>
+  <nodes>
+    <node x="406.55357142857156" y="234.0">com.alibaba.dubbo.config.AbstractInterfaceConfig</node>
+    <node x="0.0" y="468.0">com.alibaba.dubbo.config.spring.ReferenceBean</node>
+    <node x="1166.5535714285716" y="156.0">com.alibaba.dubbo.config.ProtocolConfig</node>
+    <node x="111.25" y="390.0">com.alibaba.dubbo.config.ReferenceConfig</node>
+    <node x="202.75" y="312.0">com.alibaba.dubbo.config.AbstractReferenceConfig</node>
+    <node x="1070.25" y="78.0">com.alibaba.dubbo.config.AbstractConfig</node>
+    <node x="346.25" y="390.0">com.alibaba.dubbo.config.ConsumerConfig</node>
+    <node x="522.5535714285716" y="156.0">com.alibaba.dubbo.config.AbstractMethodConfig</node>
+    <node x="985.5535714285716" y="156.0">com.alibaba.dubbo.config.ModuleConfig</node>
+    <node x="773.5535714285716" y="156.0">com.alibaba.dubbo.config.ApplicationConfig</node>
+    <node x="667.5535714285716" y="234.0">com.alibaba.dubbo.config.MethodConfig</node>
+    <node x="1084.25" y="0.0">java.io.Serializable</node>
+    <node x="1539.5535714285716" y="156.0">com.alibaba.dubbo.config.RegistryConfig</node>
+    <node x="223.0" y="468.0">com.alibaba.dubbo.config.utils.MockReferenceConfig</node>
+    <node x="549.25" y="390.0">com.alibaba.dubbo.config.ProviderConfig</node>
+    <node x="738.25" y="390.0">com.alibaba.dubbo.config.spring.ServiceBean</node>
+    <node x="616.25" y="312.0">com.alibaba.dubbo.config.AbstractServiceConfig</node>
+    <node x="1355.5535714285716" y="156.0">com.alibaba.dubbo.config.MonitorConfig</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="com.alibaba.dubbo.config.AbstractMethodConfig" target="com.alibaba.dubbo.config.AbstractConfig" relationship="GENERALIZATION">
+      <point x="4.285714284151254E-4" y="-14.0" />
+      <point x="638.054" y="131.0" />
+      <point x="1155.25" y="131.0" />
+      <point x="0.0" y="14.0" />
+    </edge>
+    <edge source="com.alibaba.dubbo.config.utils.MockReferenceConfig" target="com.alibaba.dubbo.config.ReferenceConfig" relationship="GENERALIZATION">
+      <point x="0.0" y="-14.0" />
+      <point x="336.0" y="443.0" />
+      <point x="218.75" y="443.0" />
+      <point x="0.0" y="14.0" />
+    </edge>
+    <edge source="com.alibaba.dubbo.config.MonitorConfig" target="com.alibaba.dubbo.config.AbstractConfig" relationship="GENERALIZATION">
+      <point x="4.2857142852881225E-4" y="-14.0" />
+      <point x="1437.554" y="131.0" />
+      <point x="1155.25" y="131.0" />
+      <point x="0.0" y="14.0" />
+    </edge>
+    <edge source="com.alibaba.dubbo.config.spring.ServiceBean" target="com.alibaba.dubbo.config.AbstractServiceConfig" relationship="GENERALIZATION">
+      <point x="0.0" y="-14.0" />
+      <point x="828.75" y="365.0" />
+      <point x="731.25" y="365.0" />
+      <point x="0.0" y="14.0" />
+    </edge>
+    <edge source="com.alibaba.dubbo.config.ProviderConfig" target="com.alibaba.dubbo.config.AbstractServiceConfig" relationship="GENERALIZATION">
+      <point x="0.0" y="-14.0" />
+      <point x="633.75" y="365.0" />
+      <point x="731.25" y="365.0" />
+      <point x="0.0" y="14.0" />
+    </edge>
+    <edge source="com.alibaba.dubbo.config.AbstractReferenceConfig" target="com.alibaba.dubbo.config.AbstractInterfaceConfig" relationship="GENERALIZATION">
+      <point x="0.0" y="-14.0" />
+      <point x="328.25" y="287.0" />
+      <point x="527.054" y="287.0" />
+      <point x="4.285714284151254E-4" y="14.0" />
+    </edge>
+    <edge source="com.alibaba.dubbo.config.ConsumerConfig" target="com.alibaba.dubbo.config.AbstractReferenceConfig" relationship="GENERALIZATION">
+      <point x="0.0" y="-14.0" />
+      <point x="437.75" y="365.0" />
+      <point x="328.25" y="365.0" />
+      <point x="0.0" y="14.0" />
+    </edge>
+    <edge source="com.alibaba.dubbo.config.AbstractConfig" target="java.io.Serializable" relationship="REALIZATION">
+      <point x="0.0" y="-14.0" />
+      <point x="0.0" y="14.0" />
+    </edge>
+    <edge source="com.alibaba.dubbo.config.spring.ReferenceBean" target="com.alibaba.dubbo.config.ReferenceConfig" relationship="GENERALIZATION">
+      <point x="0.0" y="-14.0" />
+      <point x="101.5" y="443.0" />
+      <point x="218.75" y="443.0" />
+      <point x="0.0" y="14.0" />
+    </edge>
+    <edge source="com.alibaba.dubbo.config.AbstractInterfaceConfig" target="com.alibaba.dubbo.config.AbstractMethodConfig" relationship="GENERALIZATION">
+      <point x="4.285714284151254E-4" y="-14.0" />
+      <point x="527.054" y="209.0" />
+      <point x="638.054" y="209.0" />
+      <point x="4.285714284151254E-4" y="14.0" />
+    </edge>
+    <edge source="com.alibaba.dubbo.config.ReferenceConfig" target="com.alibaba.dubbo.config.AbstractReferenceConfig" relationship="GENERALIZATION">
+      <point x="0.0" y="-14.0" />
+      <point x="218.75" y="365.0" />
+      <point x="328.25" y="365.0" />
+      <point x="0.0" y="14.0" />
+    </edge>
+    <edge source="com.alibaba.dubbo.config.RegistryConfig" target="com.alibaba.dubbo.config.AbstractConfig" relationship="GENERALIZATION">
+      <point x="4.2857142852881225E-4" y="-14.0" />
+      <point x="1623.554" y="131.0" />
+      <point x="1155.25" y="131.0" />
+      <point x="0.0" y="14.0" />
+    </edge>
+    <edge source="com.alibaba.dubbo.config.AbstractServiceConfig" target="com.alibaba.dubbo.config.AbstractInterfaceConfig" relationship="GENERALIZATION">
+      <point x="0.0" y="-14.0" />
+      <point x="731.25" y="287.0" />
+      <point x="527.054" y="287.0" />
+      <point x="4.285714284151254E-4" y="14.0" />
+    </edge>
+    <edge source="com.alibaba.dubbo.config.ApplicationConfig" target="com.alibaba.dubbo.config.AbstractConfig" relationship="GENERALIZATION">
+      <point x="4.285714284151254E-4" y="-14.0" />
+      <point x="869.554" y="131.0" />
+      <point x="1155.25" y="131.0" />
+      <point x="0.0" y="14.0" />
+    </edge>
+    <edge source="com.alibaba.dubbo.config.ModuleConfig" target="com.alibaba.dubbo.config.AbstractConfig" relationship="GENERALIZATION">
+      <point x="4.2857142852881225E-4" y="-14.0" />
+      <point x="1066.054" y="131.0" />
+      <point x="1155.25" y="131.0" />
+      <point x="0.0" y="14.0" />
+    </edge>
+    <edge source="com.alibaba.dubbo.config.ProtocolConfig" target="com.alibaba.dubbo.config.AbstractConfig" relationship="GENERALIZATION">
+      <point x="4.2857142852881225E-4" y="-14.0" />
+      <point x="1251.054" y="131.0" />
+      <point x="1155.25" y="131.0" />
+      <point x="0.0" y="14.0" />
+    </edge>
+    <edge source="com.alibaba.dubbo.config.MethodConfig" target="com.alibaba.dubbo.config.AbstractMethodConfig" relationship="GENERALIZATION">
+      <point x="4.285714284151254E-4" y="-14.0" />
+      <point x="749.054" y="209.0" />
+      <point x="638.054" y="209.0" />
+      <point x="4.285714284151254E-4" y="14.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic" zoom="0.6273148148148148" showDependencies="false" x="733.6457564575645" y="248.0" />
+  <SelectedNodes />
+  <Categories />
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

@@ -55,8 +55,10 @@ import java.util.concurrent.atomic.AtomicReference;
 public abstract class AbstractRegistry implements Registry {
 
     // URL address separator, used in file cache, service provider URL separation
+    // URL 地址分隔符，用于文件缓存，服务提供成功url分隔
     private static final char URL_SEPARATOR = ' ';
     // URL address separated regular expression for parsing the service provider URL list in the file cache
+    //URL 地址分隔的正则表达式，用于分析文件缓存中的服务提供程序URL列表
     private static final String URL_SPLIT = "\\s+";
     // Log output
     protected final Logger logger = LoggerFactory.getLogger(getClass());
@@ -86,7 +88,13 @@ public abstract class AbstractRegistry implements Registry {
     public AbstractRegistry(URL url) {
         setUrl(url);
         // Start file save timer
-        //读取是否同步保存文件，默认false，默认是异步保存文件
+        /**
+         *  读取是否同步保存文件，默认false，默认是异步保存文件
+         *  可以指定注册中心磁盘缓存文件，配置方式：
+         *      1. 使用file属性指定  <dubbo:registry address="xxx" file="/xx/xxx"/>
+         *      2. 使用save.file属性指定 <dubbo:registry address="xxx" save.file="/xx/xxx"/>
+         *      3. 不显示指定，使用默认值：System.getProperty("user.home") + "/.dubbo/dubbo-registry-" + 应用名 + "-" + url.getAddress() + ".cache"
+         */
         syncSaveFile = url.getParameter(Constants.REGISTRY_FILESAVE_SYNC_KEY, false);
         //缓存文件全路径/Users/jannal/.dubbo/dubbo-registry-demo-provider-dubbo-zookeeper:2181.cache
         String filename = url.getParameter(Constants.FILE_KEY, System.getProperty("user.home") + "/.dubbo/dubbo-registry-" + url.getParameter(Constants.APPLICATION_KEY) + "-" + url.getAddress() + ".cache");
@@ -102,6 +110,7 @@ public abstract class AbstractRegistry implements Registry {
         this.file = file;
         //加载文件中缓存的内容到Properties
         loadProperties();
+        //TODO 这个的意义是什么？
         notify(url.getBackupUrls());
     }
 

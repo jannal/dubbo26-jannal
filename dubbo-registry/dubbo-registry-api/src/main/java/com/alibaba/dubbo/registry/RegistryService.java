@@ -84,6 +84,11 @@ public interface RegistryService {
      * 6. 允许URI相同但参数不同的URL并存，不能覆盖。<br>
      * 7. 必须阻塞订阅过程，等第一次通知完后再返回。<br>
      *
+     * 在 URL的category 属性上，表示订阅的数据分类。目前有四种类型：
+     * 1 consumers 服务消费者列表
+     * 2 providers 服务提供者列表
+     * 3 routers 路由规则列表
+     * 4 configurations 配置规则列表
      * @param url      Subscription condition, not allowed to be empty, e.g. consumer://10.20.153.10/com.alibaba.foo.BarService?version=1.0.0&application=kylin
      * @param listener A listener of the change event, not allowed to be empty
      */
