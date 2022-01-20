@@ -226,6 +226,7 @@ public class ReferenceConfig<T> extends AbstractReferenceConfig {
                     resolveFile = userResolveFile.getAbsolutePath();
                 }
             }
+            //文件优先级次之
             if (resolveFile != null && resolveFile.length() > 0) {
                 Properties properties = new Properties();
                 FileInputStream fis = null;
@@ -303,7 +304,10 @@ public class ReferenceConfig<T> extends AbstractReferenceConfig {
             if (revision != null && revision.length() > 0) {
                 map.put("revision", revision);
             }
-            //com.alibaba.dubbo.common.bytecode.Wrapper0
+            //com.alibaba.dubbo.common.bytecode.Wrapper0 这个的意义是什么？
+            //直接通过接口的interfaceClass.getMethods()获取不行吗？
+            //猜测意义：1. 提前生成代理类，会缓存在内存中。
+            //        2. wrapper可以对interface的方法做过滤。后面ConsumerModel又使用interfaceClass.getMethods()，感觉这个猜测可能不成立
             String[] methods = Wrapper.getWrapper(interfaceClass).getMethodNames();
             if (methods.length == 0) {
                 logger.warn("NO method found in service interface " + interfaceClass.getName());
@@ -318,9 +322,11 @@ public class ReferenceConfig<T> extends AbstractReferenceConfig {
         appendParameters(map, consumer, Constants.DEFAULT_KEY);
         appendParameters(map, this);
         String prefix = StringUtils.getServiceKey(map);
+        //method配置解析  <dubbo:method name="sayHello" retries="1" onreturn="xx" onthrow=xx/>
         if (methods != null && !methods.isEmpty()) {
             for (MethodConfig method : methods) {
                 appendParameters(map, method, method.getName());
+                //方法名.retry
                 String retryKey = method.getName() + ".retry";
                 if (map.containsKey(retryKey)) {
                     String retryValue = map.remove(retryKey);
@@ -354,6 +360,7 @@ public class ReferenceConfig<T> extends AbstractReferenceConfig {
     private T createProxy(Map<String, String> map) {
         URL tmpUrl = new URL("temp", "localhost", 0, map);
         final boolean isJvmRefer;
+
         if (isInjvm() == null) {
             // url 配置被指定（直连模式），则不做本地引用
             if (url != null && url.length() > 0) { // if a url is specified, don't do local reference
@@ -367,11 +374,12 @@ public class ReferenceConfig<T> extends AbstractReferenceConfig {
                 isJvmRefer = false;
             }
         } else {
-            // 获取 injvm 配置值
+            // 获取 injvm 配置值 ， <dubbo:reference injvm="true" /> 这种配置时，已过时（现在使用scope="local"）
             isJvmRefer = isInjvm().booleanValue();
         }
         // 本地引用
         if (isJvmRefer) {
+            //设置protocol为injvm，此时protocol对应的是InjvmProtocol，invoker对应的是InjvmInvoker
             URL url = new URL(Constants.LOCAL_PROTOCOL, NetUtils.LOCALHOST, 0, interfaceClass.getName()).addParameters(map);
             //直接从内存中获取实例inJvm
             invoker = refprotocol.refer(interfaceClass, url);
@@ -379,7 +387,7 @@ public class ReferenceConfig<T> extends AbstractReferenceConfig {
                 logger.info("Using injvm service " + interfaceClass.getName());
             }
         } else {
-            // 远程引用，url 不为空，表明想进行点对点调用
+            // 远程引用，url 不为空（比如dubbo://172.16.117.33:20882，多个使用分号分隔），表明想进行点对点调用
             if (url != null && url.length() > 0) { // user specified URL, could be peer-to-peer address, or register center's address.
                 //使用分号分割多个
                 String[] us = Constants.SEMICOLON_SPLIT_PATTERN.split(url);
@@ -391,13 +399,13 @@ public class ReferenceConfig<T> extends AbstractReferenceConfig {
                             // 设置接口全限定名为 url 路径
                             url = url.setPath(interfaceName);
                         }
-                        // 检测 url 协议是否为 registry，若是，表明用户想使用指定的注册中心
+                        // 检测 url 协议是否为 registry，若是，表明用户想使用指定的注册中心(直连模式使用注册中心)
                         // xml中的url配置类似如下格式registry://dubbo-zookeeper:2181/cn.jannal.dubbo.facade.DemoService/?registry=zookeeper
                         if (Constants.REGISTRY_PROTOCOL.equals(url.getProtocol())) {
                             // 将 map 转换为查询字符串，并作为 refer 参数的值添加到 url 中
                             urls.add(url.addParameterAndEncoded(Constants.REFER_KEY, StringUtils.toQueryString(map)));
                         } else {
-                            // 合并 url，移除服务提供者的一些配置（这些配置来源于用户配置的 url 属性），
+                            // 合并url，移除服务提供者的一些配置（这些配置来源于用户配置的 url 属性），
                             // 比如线程池相关配置。并保留服务提供者的部分配置，比如版本，group，时间戳等
                             // 最后将合并后的配置设置为 url 查询字符串中。
                             urls.add(ClusterUtils.mergeUrl(url, map));
@@ -424,7 +432,8 @@ public class ReferenceConfig<T> extends AbstractReferenceConfig {
             }
             // 单个注册中心或服务提供者(服务直连，下同)
             if (urls.size() == 1) {
-                // 调用 RegistryProtocol 的 refer 构建 Invoker 实例
+                // 直连调用是直接调用DubboProtocol 的 refer 构建 Invoker 实例
+                //DubboProtocol => DubboInvoker
                 invoker = refprotocol.refer(interfaceClass, urls.get(0));
             } else {
                 // 多个注册中心或多个服务提供者，或者两者混合
@@ -433,7 +442,7 @@ public class ReferenceConfig<T> extends AbstractReferenceConfig {
                 // 获取所有的 Invoker
                 for (URL url : urls) {
                     // 通过 refprotocol 调用 refer 构建 Invoker，refprotocol 会在运行时
-                    // 根据 url 协议头加载指定的 Protocol 实例，并调用实例的 refer 方法
+                    // 根据 url 协议头加载指定的 Protocol 实例（RegistryProtocol），并调用实例的 refer 方法
                     invokers.add(refprotocol.refer(interfaceClass, url));
                     if (Constants.REGISTRY_PROTOCOL.equals(url.getProtocol())) {
                         registryURL = url; // use last registry url
@@ -445,7 +454,7 @@ public class ReferenceConfig<T> extends AbstractReferenceConfig {
                     URL u = registryURL.addParameter(Constants.CLUSTER_KEY, AvailableCluster.NAME);
                     invoker = cluster.join(new StaticDirectory(u, invokers));
                 } else { // not a registry url
-                    // 创建 StaticDirectory 实例，并由 Cluster 对多个 Invoker 进行合并
+                    // 无注册中心（直连），创建 StaticDirectory 实例，并由 Cluster 对多个 Invoker 进行合并
                     invoker = cluster.join(new StaticDirectory(invokers));
                 }
             }
@@ -463,6 +472,8 @@ public class ReferenceConfig<T> extends AbstractReferenceConfig {
             // make it possible for consumer to retry later if provider is temporarily unavailable
             initialized = false;
             //可能会OOM，2.6.11已经修复https://github.com/apache/dubbo/issues/8515
+            //RegistryProtocol调用了 ProviderConsumerRegTable.registerConsumer
+            //所以如果如果出现错误，需要清除ProviderConsumerRegTable中的consumerInvoker，避免内存泄露
             throw new IllegalStateException("Failed to check the status of the service " + interfaceName + ". No provider available for the service " + (group == null ? "" : group + "/") + interfaceName + (version == null ? "" : ":" + version) + " from the url " + invoker.getUrl() + " to the consumer " + NetUtils.getLocalHost() + " use dubbo version " + Version.getVersion());
         }
         if (logger.isInfoEnabled()) {

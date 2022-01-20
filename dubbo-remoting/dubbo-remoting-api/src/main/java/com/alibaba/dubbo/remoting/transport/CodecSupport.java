@@ -68,8 +68,10 @@ public class CodecSupport {
 
     public static Serialization getSerialization(URL url, Byte id) throws IOException {
         Serialization serialization = getSerializationById(id);
+        // 从url获取序列器名称，默认为hession2
         String serializationName = url.getParameter(Constants.SERIALIZATION_KEY, Constants.DEFAULT_REMOTING_SERIALIZATION);
         // Check if "serialization id" passed from network matches the id on this side(only take effect for JDK serialization), for security purpose.
+        // 为了安全起见，检查从网络传递的【序列化id】是否与此端的id匹配（仅对JDK序列化生效）
         if (serialization == null
                 || ((id == 3 || id == 7 || id == 4) && !(serializationName.equals(ID_SERIALIZATIONNAME_MAP.get(id))))) {
             throw new IOException("Unexpected serialization id:" + id + " received from network, please check if the peer send the right id.");
@@ -78,6 +80,7 @@ public class CodecSupport {
     }
 
     public static ObjectInput deserialize(URL url, InputStream is, byte proto) throws IOException {
+        // 根据序列化标志获取序列化器
         Serialization s = getSerialization(url, proto);
         return s.deserialize(url, is);
     }

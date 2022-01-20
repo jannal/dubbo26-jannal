@@ -45,15 +45,25 @@ import static com.alibaba.dubbo.rpc.protocol.dubbo.CallbackServiceCodec.encodeIn
  */
 public class DubboCodec extends ExchangeCodec implements Codec2 {
 
+    //协议名
     public static final String NAME = "dubbo";
+    //协议版本
     public static final String DUBBO_VERSION = Version.getProtocolVersion();
+    //异常响应
     public static final byte RESPONSE_WITH_EXCEPTION = 0;
+    //正常响应，有结果
     public static final byte RESPONSE_VALUE = 1;
+    //正常响应，无结果
     public static final byte RESPONSE_NULL_VALUE = 2;
+    //异常返回包含隐式参数
     public static final byte RESPONSE_WITH_EXCEPTION_WITH_ATTACHMENTS = 3;
+    //响应结果包含隐式参数
     public static final byte RESPONSE_VALUE_WITH_ATTACHMENTS = 4;
+    //响应空值包含隐式参数
     public static final byte RESPONSE_NULL_VALUE_WITH_ATTACHMENTS = 5;
+    //方法参数
     public static final Object[] EMPTY_OBJECT_ARRAY = new Object[0];
+    //方法参数类型
     public static final Class<?>[] EMPTY_CLASS_ARRAY = new Class<?>[0];
     private static final Logger log = LoggerFactory.getLogger(DubboCodec.class);
 
@@ -63,7 +73,7 @@ public class DubboCodec extends ExchangeCodec implements Codec2 {
         // get request id.
         long id = Bytes.bytes2long(header, 4);
         if ((flag & FLAG_REQUEST) == 0) {
-            // decode response.
+            // decode response. 根据请求ID，构建响应结果。
             Response res = new Response(id);
             if ((flag & FLAG_EVENT) != 0) {
                 res.setEvent(Response.HEARTBEAT_EVENT);
@@ -80,6 +90,8 @@ public class DubboCodec extends ExchangeCodec implements Codec2 {
                         data = decodeEventData(channel,  CodecSupport.deserialize(channel.getUrl(), is, proto));
                     } else {
                         DecodeableRpcResult result;
+                        //decode.in.io如果为true，表示在IO线程中解码消息体，
+                        //如果decode.in.io设置为false,则会在DecodeHanler中执行（受Dispatch事件派发模型影响）。
                         if (channel.getUrl().getParameter(
                                 Constants.DECODE_IN_IO_THREAD_KEY,
                                 Constants.DEFAULT_DECODE_IN_IO_THREAD)) {
@@ -87,6 +99,7 @@ public class DubboCodec extends ExchangeCodec implements Codec2 {
                                     (Invocation) getRequestData(id), proto);
                             result.decode();
                         } else {
+                            //不在IO线程池中完成解码操作，实现方式也就是不在io线程中调用DecodeableRpcInvocation#decode方法。
                             result = new DecodeableRpcResult(channel, res,
                                     new UnsafeByteArrayInputStream(readMessageData(is)),
                                     (Invocation) getRequestData(id), proto);
@@ -167,18 +180,23 @@ public class DubboCodec extends ExchangeCodec implements Codec2 {
     @Override
     protected void encodeRequestData(Channel channel, ObjectOutput out, Object data, String version) throws IOException {
         RpcInvocation inv = (RpcInvocation) data;
-
+        // 框架版本
         out.writeUTF(version);
+        //调用接口
         out.writeUTF(inv.getAttachment(Constants.PATH_KEY));
+        //接口版本， 默认0.0.0
         out.writeUTF(inv.getAttachment(Constants.VERSION_KEY));
-
+        //接口方法名称
         out.writeUTF(inv.getMethodName());
+        //接口方法参数
         out.writeUTF(ReflectUtils.getDesc(inv.getParameterTypes()));
         Object[] args = inv.getArguments();
         if (args != null)
             for (int i = 0; i < args.length; i++) {
+                // 调用 CallbackServiceCodec#encodeInvocationArgument(...) 方法编码参数，主要用于参数回调功能
                 out.writeObject(encodeInvocationArgument(channel, inv, i));
             }
+        //附件参数（或隐式参数）
         out.writeObject(inv.getAttachments());
     }
 
@@ -186,17 +204,21 @@ public class DubboCodec extends ExchangeCodec implements Codec2 {
     protected void encodeResponseData(Channel channel, ObjectOutput out, Object data, String version) throws IOException {
         Result result = (Result) data;
         // currently, the version value in Response records the version of Request
+        //判断客户端请求的版本是否支持服务端隐式参数传递到客户端
         boolean attach = Version.isSupportResponseAttatchment(version);
         Throwable th = result.getException();
         if (th == null) {
+            //没有异常，提取正常的返回结果
             Object ret = result.getValue();
             if (ret == null) {
+                //设置隐式参数标记
                 out.writeByte(attach ? RESPONSE_NULL_VALUE_WITH_ATTACHMENTS : RESPONSE_NULL_VALUE);
             } else {
                 out.writeByte(attach ? RESPONSE_VALUE_WITH_ATTACHMENTS : RESPONSE_VALUE);
                 out.writeObject(ret);
             }
         } else {
+            //设置隐式参数标记
             out.writeByte(attach ? RESPONSE_WITH_EXCEPTION_WITH_ATTACHMENTS : RESPONSE_WITH_EXCEPTION);
             out.writeObject(th);
         }
@@ -204,6 +226,7 @@ public class DubboCodec extends ExchangeCodec implements Codec2 {
         if (attach) {
             // returns current version of Response to consumer side.
             result.getAttachments().put(Constants.DUBBO_VERSION_KEY, Version.getProtocolVersion());
+            //写入隐式参数
             out.writeObject(result.getAttachments());
         }
     }

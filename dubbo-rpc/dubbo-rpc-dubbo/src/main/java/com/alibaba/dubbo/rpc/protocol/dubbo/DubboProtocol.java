@@ -352,6 +352,7 @@ public class DubboProtocol extends AbstractProtocol {
         int connections = url.getParameter(Constants.CONNECTIONS_KEY, 0);
         // if not configured, connection is shared, otherwise, one connection for one service
         if (connections == 0) {
+            //没有配置connection，则使用共享连接（就一个连接）
             service_share_connect = true;
             connections = 1;
         }

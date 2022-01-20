@@ -29,6 +29,9 @@ import com.alibaba.dubbo.rpc.RpcResult;
 
 import java.io.IOException;
 
+/**
+ * 一次读取更多的PRC完整报文,多消息处理
+ */
 public final class DubboCountCodec implements Codec2 {
 
     private DubboCodec codec = new DubboCodec();
@@ -40,25 +43,35 @@ public final class DubboCountCodec implements Codec2 {
 
     @Override
     public Object decode(Channel channel, ChannelBuffer buffer) throws IOException {
+        // 记录当前读位置，用于下面计算每条消息的长度
         int save = buffer.readerIndex();
+        // 创建MultiMessage对象，对多消息的封装，MultiMessageHandler处理器会对该消息进行分发处理。
         MultiMessage result = MultiMessage.create();
+        // 循环解码消息
         do {
             Object obj = codec.decode(channel, buffer);
+            // 字节数不够，重置读指针，然后结束解析
             if (Codec2.DecodeResult.NEED_MORE_INPUT == obj) {
                 buffer.readerIndex(save);
                 break;
             } else {
+                // 添加结果消息
                 result.addMessage(obj);
+                // 记录消息长度
                 logMessageLength(obj, buffer.readerIndex() - save);
+                // 记录当前读位置，用于计算下一条消息的长度
                 save = buffer.readerIndex();
             }
         } while (true);
+        // 没有解码出消息，则返回NEED_MORE_INPUT错误码
         if (result.isEmpty()) {
             return Codec2.DecodeResult.NEED_MORE_INPUT;
         }
+        // 只解码出来一条消息，则直接返回该条消息
         if (result.size() == 1) {
             return result.get(0);
         }
+        // 解码出多条消息则将MultiMessage返回
         return result;
     }
 

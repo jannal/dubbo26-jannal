@@ -385,6 +385,7 @@ public class ServiceConfig<T> extends AbstractServiceConfig {
 
     private void doExportUrlsFor1Protocol(ProtocolConfig protocolConfig, List<URL> registryURLs) {
         String name = protocolConfig.getName();
+        //默认使用dubbo协议
         if (name == null || name.length() == 0) {
             name = "dubbo";
         }
