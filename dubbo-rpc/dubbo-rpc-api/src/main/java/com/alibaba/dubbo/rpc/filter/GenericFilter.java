@@ -56,25 +56,31 @@ public class GenericFilter implements Filter {
                 && inv.getArguments() != null
                 && inv.getArguments().length == 3
                 && !invoker.getInterface().equals(GenericService.class)) {
+            //调用方法名
             String name = ((String) inv.getArguments()[0]).trim();
+            //调用方法参数
             String[] types = (String[]) inv.getArguments()[1];
+            //参数值
             Object[] args = (Object[]) inv.getArguments()[2];
             try {
+                //反射获取方法实例
                 Method method = ReflectUtils.findMethodByMethodSignature(invoker.getInterface(), name, types);
                 Class<?>[] params = method.getParameterTypes();
                 if (args == null) {
                     args = new Object[params.length];
                 }
+                // 获取泛化调用的泛化类型
                 String generic = inv.getAttachment(Constants.GENERIC_KEY);
-
+                // 泛化类型为空，则从上下文获取
                 if (StringUtils.isBlank(generic)) {
                     generic = RpcContext.getContext().getAttachment(Constants.GENERIC_KEY);
                 }
-
+                // generic 为空 || 默认情况，则使用 generic=true 的方式
                 if (StringUtils.isEmpty(generic)
                         || ProtocolUtils.isDefaultGenericSerialization(generic)) {
                     args = PojoUtils.realize(args, params, method.getGenericParameterTypes());
                 } else if (ProtocolUtils.isJavaGenericSerialization(generic)) {
+                    // generic = nativjava 的方式
                     for (int i = 0; i < args.length; i++) {
                         if (byte[].class == args[i].getClass()) {
                             try {
@@ -96,6 +102,7 @@ public class GenericFilter implements Filter {
                         }
                     }
                 } else if (ProtocolUtils.isBeanGenericSerialization(generic)) {
+                    // generic = bean的方式
                     for (int i = 0; i < args.length; i++) {
                         if (args[i] instanceof JavaBeanDescriptor) {
                             args[i] = JavaBeanSerializeUtil.deserialize((JavaBeanDescriptor) args[i]);
@@ -110,7 +117,9 @@ public class GenericFilter implements Filter {
                         }
                     }
                 }
+                // 进行服务调用。传递给下一个 filter,最后进行服务调用
                 Result result = invoker.invoke(new RpcInvocation(method, args, inv.getAttachments()));
+                // 对结果集进行反序列化并返回
                 if (result.hasException()
                         && !(result.getException() instanceof GenericException)) {
                     return new RpcResult(new GenericException(result.getException()));

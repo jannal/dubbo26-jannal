@@ -47,7 +47,7 @@ import java.lang.reflect.Method;
 public class GenericImplFilter implements Filter {
 
     private static final Logger logger = LoggerFactory.getLogger(GenericImplFilter.class);
-
+    //泛化调用参数类型
     private static final Class<?>[] GENERIC_PARAMETER_TYPES = new Class<?>[]{String.class, String[].class, Object[].class};
 
     @Override
@@ -56,6 +56,7 @@ public class GenericImplFilter implements Filter {
         if (ProtocolUtils.isGeneric(generic)
                 && !Constants.$INVOKE.equals(invocation.getMethodName())
                 && invocation instanceof RpcInvocation) {
+            //获取泛化调用的参数 ：调用方法名、调用参数类型、调用参数值等
             RpcInvocation invocation2 = (RpcInvocation) invocation;
             String methodName = invocation2.getMethodName();
             Class<?>[] parameterTypes = invocation2.getParameterTypes();
@@ -67,24 +68,29 @@ public class GenericImplFilter implements Filter {
             }
 
             Object[] args;
+            // 判断序列化方式，进行序列化。如果是 Bean 序列化方式，则使用JavaBeanSerializeUtil 进行序列化
             if (ProtocolUtils.isBeanGenericSerialization(generic)) {
                 args = new Object[arguments.length];
                 for (int i = 0; i < arguments.length; i++) {
                     args[i] = JavaBeanSerializeUtil.serialize(arguments[i], JavaBeanAccessor.METHOD);
                 }
             } else {
+                // 否则(generic = true || nativejava) 使用PojoUtils 进行序列化
                 args = PojoUtils.generalize(arguments);
             }
-
+            // 设置调用方法为 $invoke、参数类型为GENERIC_PARAMETER_TYPES，并设置参数具体值。
+            // 目的是为了让 GenericFilter 能识别出这次调用是泛化调用。
             invocation2.setMethodName(Constants.$INVOKE);
             invocation2.setParameterTypes(GENERIC_PARAMETER_TYPES);
             invocation2.setArguments(new Object[]{methodName, types, args});
+            // 进行泛化调用
             Result result = invoker.invoke(invocation2);
-
+            // 如果泛化调用没有异常, 则将结果集反序列化后返回。
             if (!result.hasException()) {
                 Object value = result.getValue();
                 try {
                     Method method = invoker.getInterface().getMethod(methodName, parameterTypes);
+                    // 对结果进行反序列化
                     if (ProtocolUtils.isBeanGenericSerialization(generic)) {
                         if (value == null) {
                             return new RpcResult(value);
@@ -106,6 +112,7 @@ public class GenericImplFilter implements Filter {
                     throw new RpcException(e.getMessage(), e);
                 }
             } else if (result.getException() instanceof GenericException) {
+                // 返回异常是 GenericException 类型，则说明是泛化异常而非调用过程中异常。进行处理
                 GenericException exception = (GenericException) result.getException();
                 try {
                     String className = exception.getExceptionClass();
@@ -145,7 +152,7 @@ public class GenericImplFilter implements Filter {
             }
             return result;
         }
-
+        // 判断消费者是否开启了泛化调用,调用方法名为 $invoke && invocation参数有三个 && generic 参数满足三种泛化方式之一
         if (invocation.getMethodName().equals(Constants.$INVOKE)
                 && invocation.getArguments() != null
                 && invocation.getArguments().length == 3
@@ -170,6 +177,7 @@ public class GenericImplFilter implements Filter {
             ((RpcInvocation) invocation).setAttachment(
                     Constants.GENERIC_KEY, invoker.getUrl().getParameter(Constants.GENERIC_KEY));
         }
+        //普通调用并返回
         return invoker.invoke(invocation);
     }
 

@@ -37,10 +37,12 @@ public class TelnetHandlerAdapter extends ChannelHandlerAdapter implements Telne
         StringBuilder buf = new StringBuilder();
         message = message.trim();
         String command;
+        //输入的指令识别为command(invoke ls status等)
         if (message.length() > 0) {
             int i = message.indexOf(' ');
             if (i > 0) {
                 command = message.substring(0, i).trim();
+                //指令外的识别为message
                 message = message.substring(i + 1).trim();
             } else {
                 command = message;
@@ -50,6 +52,7 @@ public class TelnetHandlerAdapter extends ChannelHandlerAdapter implements Telne
             command = "";
         }
         if (command.length() > 0) {
+            //检查指令对应的扩展点
             if (extensionLoader.hasExtension(command)) {
                 if (commandEnabled(channel.getUrl(), command)) {
                     try {

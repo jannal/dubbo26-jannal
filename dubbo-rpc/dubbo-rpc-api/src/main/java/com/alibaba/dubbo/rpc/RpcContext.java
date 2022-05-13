@@ -61,8 +61,9 @@ public class RpcContext {
             return new RpcContext();
         }
     };
-
+    // 用于记录调用上下文的附加信息，这些信息会被添加到 Invocation 中，并传递到远端节点。
     private final Map<String, String> attachments = new HashMap<String, String>();
+    // 用来记录上下文的键值对信息，但是不会被传递到远端节点。
     private final Map<String, Object> values = new HashMap<String, Object>();
     private Future<?> future;
 
